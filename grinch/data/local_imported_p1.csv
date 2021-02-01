@@ -1,0 +1,10 @@
+Country,earliest_report,date_local,imported_local,method_surveillance,Source
+Brazil,2020-12-15,2020-12-15,1,community_sequencing,https://virological.org/t/genomic-characterisation-of-an-emergent-sars-cov-2-lineage-in-manaus-preliminary-findings/586
+Japan,2021-01-12,,0,travellers,https://www.niid.go.jp/niid/en/2019-ncov-e/10108-covid19-33-en.html
+Italy,2021-01-17,,0,travellers,https://www.business-standard.com/article/current-affairs/italy-bans-flights-from-brazil-after-covid-variant-detected-in-4-passengers-121011700080_1.html
+South Korea,2021-01-10,,0,travellers,GISAID
+Germany,2021-01-22,,0,travellers,https://www.faz.net/aktuell/rhein-main/nachweis-in-frankfurt-neue-corona-mutation-in-deutschland-17159476.html
+Faroe Islands,2021-01-12,,0,travellers,https://local.fo/in-a-first-european-case-brazilian-coronavirus-variant-confirmed-in-the-faroe-islands/
+United States of America,2021-01-25,,0,travellers,https://twitter.com/SeanW_PHLNGS/status/1353831578342981632?s=20
+Netherlands,2021-01-29,,,community_sequencing,https://www.rivm.nl/en/news/brazilian-coronavirus-variants-p1-and-p2-found-in-netherlands
+Colombia,2021-01-30,2021-01-31,1,community_sequencing,https://twitter.com/INSColombia/status/1356012753656422403?s=20; https://twitter.com/INSColombia/status/1355531730422263809?s=20

@@ -1,0 +1,32 @@
+Country,earliest_report,date_local,imported_local,method_surveillance,Source
+South Africa,2020-10-08,2020-10-08,1,community_sequencing,https://www.medrxiv.org/content/10.1101/2020.12.21.20248640v1
+United Kingdom,2020-12-12,2020-12-20,1,community_sequencing,https://travelhealthpro.org.uk/news/561/covid-19-variant-south-africa-two-cases-reported-in-the-united-kingdom
+Switzerland,2020-12-14,,0,,https://www.swissinfo.ch/eng/south-african-covid-variant-reported-in-southern-switzerland/46257338
+Finland,2020-12-19,,0,travellers,https://news.sky.com/story/covid-19-finland-reports-cases-of-new-variants-first-identified-in-uk-and-south-africa-12173983
+Zambia,2020-12-30,2020-12-30,1,,https://twitter.com/danieljbridges/status/1344227535870164992
+Botswana,2020-12-17,2021-01-04,1,community_sequencing,https://www.sabcnews.com/sabcnews/botswana-government-adjusts-national-lockdown-regulations/
+France,2020-12-31,,0,travellers,https://www.france24.com/en/france/20201231-france-detects-first-case-of-south-african-strain-of-covid-19
+Japan,2020-12-19,,0,travellers,https://www.japantimes.co.jp/news/2020/12/29/national/japan-south-africa-variant/
+Australia,2020-12-22,,0,travellers,https://news.sky.com/story/australia-reports-its-first-case-of-south-africa-coronavirus-variant-12174611
+Sweden,2021-01-03,,0,travellers,http://outbreaknewstoday.com/sweden-reports-1st-south-african-covid-19-virus-variant-49394/
+Austria,2021-01-04,2021-01-08,1,community_sequencing,https://www.sn.at/panorama/wissen/live-corona-mutationen-sind-in-oesterreich-angekommen-97891537; https://www.derstandard.at/story/2000123550006/suedafrika-mutation-bei-mindestens-fuenf-faellen-im-zillertal-nachgewiesen
+Norway,2020-12-31,,0,travellers,https://www.vg.no/nyheter/innenriks/i/rgzer8/mer-smittsom-virusmutasjon-fra-soer-afrika-paavist-i-norge
+China,2020-12-08,,0,travellers,https://news.cgtn.com/news/2021-01-06/Guangdong-detects-first-COVID-19-case-of-variant-found-in-S-Africa-WPW5sbHcju/index.html
+Ireland,2021-01-08,2021-01-26,1,community_sequencing,https://www.gov.ie/en/press-release/463de-statement-from-the-national-public-health-emergency-team-tuesday-26-january/; https://www.reuters.com/article/health-coronavirus-ireland/south-african-covid-19-variant-present-in-ireland-health-chief-idINS8N2II031
+Canada,2021-01-08,,0,travellers,https://www.sylvanlakenews.com/news/south-african-covid-19-found-in-alberta-as-provinces-tighten-restrictions/
+Taiwan,2020-12-24,,0,travellers,https://www.reuters.com/article/healthcoronavirus-taiwan/taiwan-confirms-first-case-of-safrican-covid-19-variant-idUSL1N2JO0K9
+Germany,2020-12-21,,0,travellers,https://www.dw.com/en/south-african-covid-variant-found-in-germany/a-56205752
+Belgium,2021-01-13,2021-01-13,1,,https://www.standaard.be/cnt/dmf20210114_94148148
+South Korea,2020-12-26,,0,travellers,https://www.donga.com/news/Society/article/all/20210102/104736108/1
+Netherlands,2020-12-22,,,,https://www.rivm.nl/en/news/south-african-coronavirus-variant-found-in-netherlands
+Israel,2021-01-10,2021-01-27,1,community_sequencing,https://twitter.com/Nadav_Eyal/status/1354374717193519105?s=20; https://www.ynetnews.com/health_science/article/rkwq3XuCP
+New Zealand,2021-01-10,,0,travellers,https://www.stuff.co.nz/national/health/coronavirus/300201729/covid19-health-officials-confirm-31-new-cases-of-coronavirus-first-case-of-south-african-variant-found
+Ghana,2021-01-18,,0,travellers,https://twitter.com/gordon_awandare/status/1351235484085846019
+Kenya,2020-12-15,,0,travellers,GISAID
+United Arab Emirates,2020-12-26,,0,travellers,https://www.reuters.com/article/us-health-coronavirus-emirates/uae-reports-limited-number-of-cases-of-new-coronavirus-variant-idUKKBN2931RJ?edition-redirect=uk
+Tanzania,2021-01-19,2021-01-19,1,community_sequencing,https://files.ssi.dk/covid19/status-b117/status-b117-24012021-2lys
+Mozambique,2020-11-01,2020-11-01,1,community_sequencing,http://www.xinhuanet.com/english/2021-01/28/c_139702375.htm
+Gambia,2021-01-14,2021-01-14,1,community_sequencing,https://www.afro.who.int/regional-director/speeches-messages/opening-statement-covid-19-press-conference-14-january-2021
+Mayotte,2021-01-07,2021-01-07,1,community_sequencing,GISAID
+Panama,2021-01-23,,0,travellers,https://www.reuters.com/article/us-health-coronavirus-panama-idUSKBN29R2R1
+United States of America,2021-01-27,2021-01-27,1,community_sequencing,https://www.live5news.com/2021/01/28/health-department-nations-first-cases-south-african-covid-variant-found-sc/
