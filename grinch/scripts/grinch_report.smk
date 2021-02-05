@@ -103,7 +103,7 @@ rule align_to_reference:
             --reference {input.reference:q} \
             --trimstart {params.trim_start} \
             --trimend {params.trim_end} \
-            --pad \> {output.fasta:q}
+            --pad > {output.fasta:q}
         """
 
 rule make_chunks:
