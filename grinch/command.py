@@ -87,7 +87,7 @@ def main(sysargs = sys.argv[1:]):
     
     # specifying temp directory, outdir if no_temp (tempdir becomes working dir)
     tempdir = gfunk.get_temp_dir(args.tempdir, args.no_temp,cwd,config)
-
+    config["tempdir"] = tempdir
     """
     Parsing the report_group arguments, 
     config options

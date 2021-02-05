@@ -85,9 +85,30 @@ rule gisaid_remove_duplicates:
           --select-by-min-column edin_epi_day &> {log}
         """
 
+rule align_to_reference:
+    input:
+        fasta = rules.gisaid_remove_duplicates.output.fasta,
+        reference = config["reference"]
+    params:
+        trim_start = 265,
+        trim_end = 29674
+    output:
+        fasta = os.path.join(config["outdir"],"0","gisaid.UH.RD.aligned.fasta")
+    log:
+        os.path.join(config["outdir"], "logs/minimap2_sam.log")
+    shell:
+        """
+        minimap2 -a -x asm5 -t {workflow.cores} {input.reference:q} {input.fasta:q} | \
+        gofasta sam toMultiAlign \
+            --reference {input.reference:q} \
+            --trimstart {params.trim_start} \
+            --trimend {params.trim_end} \
+            --pad \> {output.fasta:q}
+        """
+
 rule make_chunks:
     input:
-        fasta = rules.gisaid_unify_headers.output.fasta
+        fasta = rules.align_to_reference.output.fasta
     output:
         txt = config["outdir"] + "/1/placeholder.txt"
     shell:
@@ -142,10 +163,9 @@ rule parse_variants_input:
                 out_handle.write("%s\n" %variant_dict[i])
 
 
-
 rule type_variants:
     input:
-        fasta = rules.gisaid_unify_headers.output.fasta,
+        fasta = rules.align_to_reference.output.fasta,
         reference = config["reference"],
         variants = rules.parse_variants_input.output
     output:

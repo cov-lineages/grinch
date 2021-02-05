@@ -16,6 +16,7 @@ setup(name='grinch',
                 "grinch/scripts/data_for_website.py",
                 "grinch/scripts/update_website.py",
                 "grinch/scripts/figure_generation.py",
+                "grinch/scripts/type_variants.py",
                 "grinch/scripts/generate_constellation.py"],
       package_data={"grinch":["data/*"]},
       install_requires=[
