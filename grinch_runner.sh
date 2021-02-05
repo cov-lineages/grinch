@@ -25,6 +25,8 @@ cp /home/shared/$TODAY/2/lineages.metadata.csv /home/shared/lineages-website/_da
 
 cd /home/shared/lineages-website && git pull
 
+git add /home/shared/lineages-website/lineages.md
+git add /home/shared/lineages-website/lineages/*.md
 git add /home/shared/lineages-website/global_report_*.md
 git add /home/shared/lineages-website/_data/lineages.metadata.csv
 git add /home/shared/lineages-website/_data/lineage_data.json
