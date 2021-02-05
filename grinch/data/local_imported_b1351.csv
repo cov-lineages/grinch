@@ -18,7 +18,7 @@ Taiwan,2020-12-24,,0,travellers,https://www.reuters.com/article/healthcoronaviru
 Germany,2020-12-21,2021-01-26,1,community_sequencing,https://www.stadt-koeln.de/politik-und-verwaltung/presse/fluechtlingsunterkunft-herkulesstrasse; https://www.dw.com/en/south-african-covid-variant-found-in-germany/a-56205752
 Belgium,2021-01-13,2021-01-13,1,,https://www.standaard.be/cnt/dmf20210114_94148148
 South Korea,2020-12-26,,0,travellers,https://www.donga.com/news/Society/article/all/20210102/104736108/1
-Netherlands,2020-12-22,,,,https://www.rivm.nl/en/news/south-african-coronavirus-variant-found-in-netherlands
+Netherlands,2020-12-22,2021-01-26,1,community_sequencing,https://www.ad.nl/dossier-coronavirus-in-de-drechtsteden/eerste-uitbraak-zuid-afrikaanse-coronavariant-in-nederland-fysiopraktijk-gorinchem-dicht~a0c8248b/?utm_source=twitter&utm_medium=social&utm_campaign=socialsharing_web&referrer=https%3A%2F%2Ft.co%2F; https://www.rivm.nl/en/news/south-african-coronavirus-variant-found-in-netherlands
 Israel,2021-01-10,2021-01-27,1,community_sequencing,https://twitter.com/Nadav_Eyal/status/1354374717193519105?s=20; https://www.ynetnews.com/health_science/article/rkwq3XuCP
 New Zealand,2021-01-10,,0,travellers,https://www.stuff.co.nz/national/health/coronavirus/300201729/covid19-health-officials-confirm-31-new-cases-of-coronavirus-first-case-of-south-african-variant-found
 Ghana,2021-01-18,,0,travellers,https://twitter.com/gordon_awandare/status/1351235484085846019
@@ -30,4 +30,4 @@ Gambia,2021-01-14,2021-01-14,1,community_sequencing,https://www.afro.who.int/reg
 Mayotte,2021-01-07,2021-01-07,1,community_sequencing,GISAID
 Panama,2021-01-23,,0,travellers,https://www.reuters.com/article/us-health-coronavirus-panama-idUSKBN29R2R1
 United States of America,2021-01-27,2021-01-27,1,community_sequencing,https://www.live5news.com/2021/01/28/health-department-nations-first-cases-south-african-covid-variant-found-sc/
-Turkey,2021-02-03,2021-02-03,1,community_sequencing,https://www.aa.com.tr/en/health/turkey-2-s-africa-1-brazil-variant-detected/2133077
+Turkey,2021-02-03,,0,community_sequencing,https://www.aa.com.tr/en/health/turkey-2-s-africa-1-brazil-variant-detected/2133077
