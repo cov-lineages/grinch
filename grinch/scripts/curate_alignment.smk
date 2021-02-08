@@ -11,47 +11,11 @@ rule all:
     input:
         os.path.join(config["outdir"],"alignment.filtered.fasta")
 
-# rule minimap2_db_to_reference:
-#     input:
-#         fasta = config["seqs"],
-#         reference = config["reference"]
-#     output:
-#         sam = os.path.join(config["outdir"],"post_qc_aln.reference_mapped.sam")
-#     message: "Running minimap2 against the reference (early lineage A) sequence"
-#     log:
-#         os.path.join(config["outdir"],"logs","minimap2_to_reference.log")
-#     shell:
-#         """
-#         minimap2 -a -x asm5 {input.reference:q} {input.fasta:q} -o {output.sam:q} &> {log}
-#         """
-
-# rule datafunk_trim_and_pad:
-#     input:
-#         sam = rules.minimap2_db_to_reference.output.sam,
-#         reference = config["reference"]
-#     message: "Running datafunk to trim and pad against the reference"
-#     params:
-#         trim_start = config["trim_start"],
-#         trim_end = config["trim_end"],
-#         insertions = os.path.join(config["outdir"],"post_qc_query.insertions.txt")
-#     output:
-#         fasta = os.path.join(config["outdir"],"alignment.full.fasta")
-#     shell:
-#         """
-#         datafunk sam_2_fasta \
-#           -s {input.sam:q} \
-#           -r {input.reference:q} \
-#           -o {output.fasta:q} \
-#           -t [{params.trim_start}:{params.trim_end}] \
-#           --pad \
-#           --log-inserts 
-#         """
-
 rule filter_alignment:
     input:
         csv = config["lineages_csv"],
         fasta = os.path.join(config["datadir"],"0","gisaid.UH.RD.aligned.fasta"),
-        full_csv = config["full_csv"]
+        full_csv = os.path.join(config["datadir"],"2","lineages.metadata.csv"),
     output:
         fasta = os.path.join(config["outdir"],"alignment.filtered.fasta"),
         csv = os.path.join(config["outdir"],"lineages.metadata.filtered.csv")
