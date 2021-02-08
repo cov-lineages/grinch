@@ -9,7 +9,9 @@ config["trim_end"] = 29674
 
 rule all:
     input:
-        os.path.join(config["outdir"],"alignment.filtered.fasta")
+        os.path.join(config["outdir"],"alignment.filtered.fasta"),
+        os.path.join(config["outdir"],"decision_tree_rules.txt"),
+        os.path.join(config["outdir"],"lineage_recall_report.txt")
 
 rule filter_alignment:
     input:
