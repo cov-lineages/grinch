@@ -68,6 +68,7 @@ def prep_inputs():
     conversion_dict["Saint_Martin"] = "Saint-Martin"
     conversion_dict["Curacao"] = "Curaçao"
     conversion_dict["St. Lucia"] = "Saint_Lucia"
+    conversion_dict["GABORONE"] = "Botswana"
 
     conversion_dict2 = {}
 
