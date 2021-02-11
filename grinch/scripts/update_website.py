@@ -13,6 +13,7 @@ def parse_args():
     parser.add_argument("--website-dir", action="store", type=str, dest="website_dir")
     parser.add_argument('-m',"--metadata", action="store",type=str, dest="metadata")
     parser.add_argument('-n',"--lineage-notes", action="store",type=str, dest="lineage_notes")
+    parser.add_argument("-d","--designations",action="store",dest="designations")
     parser.add_argument("-o","--outfile",action="store",type=str, dest="json_outfile")
     return parser.parse_args()
 
@@ -29,7 +30,7 @@ def get_description_dict(description_file):
                 lineages[tokens[0]]= tokens[1]
     return lineages
             
-def make_summary_info(metadata, notes, json_outfile):
+def make_summary_info(metadata, notes, designations, json_outfile):
     # add lineages and sub lineages into a dict with verity's summary information about each lineage
     
     description_dict = get_description_dict(notes)
@@ -41,10 +42,17 @@ def make_summary_info(metadata, notes, json_outfile):
         summary_dict[lineage] = {"Lineage":lineage,
                                 "Countries":collections.Counter(),
                                 "Earliest date": "",
-                                "Count":0,
+                                "Number designated":0,
+                                "Number assigned":0,
                                 "Date":collections.Counter(),
                                 "Travel history":collections.Counter(),
                                 "Description":description_dict[lineage]}
+
+    with open(designations,"r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            lineage = row["lineage"]
+            summary_dict[lineage]["Number designated"]+=1
 
     # compile data for json
     with open(metadata,"r") as f:
@@ -70,7 +78,7 @@ def make_summary_info(metadata, notes, json_outfile):
                     
                     summary_dict[lineage]["Date"][str(d)] +=1
 
-                    summary_dict[lineage]["Count"] +=1 
+                    summary_dict[lineage]["Number assigned"] +=1 
 
                     if travel_history:
                         summary_dict[lineage]["Travel history"][travel_history]+=1
@@ -199,7 +207,7 @@ def update_pages():
     
     lineage_path = os.path.join(website_dir, "lineages")
 
-    lineages = make_summary_info(args.metadata, args.lineage_notes, args.json_outfile)
+    lineages = make_summary_info(args.metadata, args.lineage_notes, args.designations, args.json_outfile)
     
     child_dict = get_child_dict(lineages)
     with open(f"{website_dir}/lineages.md","w") as fall:
