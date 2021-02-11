@@ -16,7 +16,7 @@ rule pangolin:
     threads:
         1
     shell:
-        "pangolin {input.fasta} --threads 1 --outdir {config[outdir]}/1 --outfile {output.csv}"
+        "pangolin {input.fasta} --outdir {config[outdir]}/1 --outfile {output.csv}"
 
 rule gather_lineages:
     input:
