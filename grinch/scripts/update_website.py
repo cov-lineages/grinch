@@ -52,7 +52,10 @@ def make_summary_info(metadata, notes, designations, json_outfile):
         reader = csv.DictReader(f)
         for row in reader:
             lineage = row["lineage"]
-            summary_dict[lineage]["Number designated"]+=1
+            if lineage in summary_dict:
+                summary_dict[lineage]["Number designated"]+=1
+            else:
+                print("Lineage not found", lineage)
 
     # compile data for json
     with open(metadata,"r") as f:
