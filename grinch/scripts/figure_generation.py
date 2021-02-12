@@ -83,6 +83,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
     country_to_new_country = {}
     country_new_seqs = {}
     country_dates = defaultdict(list)
+    absent_countries = set()
 
     with open(metadata) as f:
         data = csv.DictReader(f)
@@ -96,6 +97,9 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                 else:
                     if seq["lineage"] == lineage_of_interest:
                         seq_country = seq["country"].upper().replace(" ","_")
+                        if seq_country == "CARIBBEAN":
+                            seq_country = sequence_name.split("/")[0].upper().replace(" ","_")
+                        
                         if seq_country in conversion_dict2:
                             new_country = conversion_dict2[seq_country]
                         else:
@@ -105,6 +109,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                                 new_country = ""
                         
                         if new_country not in countries and new_country != "":
+                            absent_countries.add(new_country)
                             pass
                         elif new_country != "":
                             try:
@@ -139,14 +144,15 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
         number_to_date[count] = i
         count += 1
     
-    for country, dates in locations_to_dates.items():        
-        df_dict["admin"].append(country.upper().replace(" ","_"))
-        df_dict["earliest_date"].append(min(dates))
-        df_dict["log_number_of_sequences"].append(np.log10(len(dates)))
-        df_dict["number_of_sequences"].append(len(dates))
-        df_dict["date_number"].append(date_to_number[min(dates)])
+    for country, dates in locations_to_dates.items():  
+        if country not in absent_countries:      
+            df_dict["admin"].append(country.upper().replace(" ","_"))
+            df_dict["earliest_date"].append(min(dates))
+            df_dict["log_number_of_sequences"].append(np.log10(len(dates)))
+            df_dict["number_of_sequences"].append(len(dates))
+            df_dict["date_number"].append(date_to_number[min(dates)])
 
-        
+
     info_df = pd.DataFrame(df_dict)
 
     with_info = world_map.merge(info_df, how="outer")
@@ -155,7 +161,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
         data = csv.DictReader(f)    
         for seq in data:
             seq_country = seq["country"].upper().replace(" ","_")
-            if seq_country in country_to_new_country:
+            if seq_country in country_to_new_country and seq_country not in absent_countries:
                 new_country = country_to_new_country[seq_country]
                 date = dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
                 if date >= loc_to_earliest_date[new_country]:
@@ -164,6 +170,8 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                     else:
                         country_new_seqs[new_country] += 1
                     country_dates[new_country].append(date)
+            else:
+                print(seq_country)
 
     intermediate_dict = defaultdict(list)
     for place, total in country_new_seqs.items():
