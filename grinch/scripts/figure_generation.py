@@ -170,7 +170,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                     else:
                         country_new_seqs[new_country] += 1
                     country_dates[new_country].append(date)
-            else:
+            elif seq_country in absent_countries:
                 print(seq_country)
 
     intermediate_dict = defaultdict(list)
