@@ -98,8 +98,8 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                     if seq["lineage"] == lineage_of_interest:
                         seq_country = seq["country"].upper().replace(" ","_")
                         if seq_country == "CARIBBEAN":
-                            seq_country = sequence_name.split("/")[0].upper().replace(" ","_")
-                        
+                            seq_country = seq["sequence_name"].split("/")[0].upper().replace(" ","_")
+                            
                         if seq_country in conversion_dict2:
                             new_country = conversion_dict2[seq_country]
                         else:
@@ -161,6 +161,8 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
         data = csv.DictReader(f)    
         for seq in data:
             seq_country = seq["country"].upper().replace(" ","_")
+            if seq_country == "CARIBBEAN":
+                seq_country = seq["sequence_name"].split("/")[0].upper().replace(" ","_")
             if seq_country in country_to_new_country and seq_country not in absent_countries:
                 new_country = country_to_new_country[seq_country]
                 date = dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
