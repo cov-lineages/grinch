@@ -200,6 +200,7 @@ def make_transmission_map(figdir, world_map, lineage, relevant_table):
                 info_dict[line["Country"]] = 1
             elif line["imported_local"] == "":
                 df_dict["transmission_number"].append(0)
+                info_dict[line["Country"]] = 0
             
     transmission_df = pd.DataFrame(df_dict)
 
@@ -341,11 +342,14 @@ def flight_data_plot(figdir, flight_data,locations_to_dates,lineage, threshold, 
     legend_patches = [mpatches.Patch(color="white", label='0')]
 
     muted_dict = {}
+    legend_list = []
     for i in range(0,len(counts)):
 
-        legend_patches.append(mpatches.Patch(color=muted_pal[i], label=counts[i]))
+        legend_list.append(mpatches.Patch(color=muted_pal[i], label=counts[i]))
         muted_dict[counts[i]] = muted_pal[i]
 
+    legend_patches.append(legend_list[0])
+    legend_patches.append(legend_list[-1])
     legend_patches.append(mpatches.Patch(color="lightgrey", label='Reported'))
 
     x,y = [],[]
@@ -355,7 +359,7 @@ def flight_data_plot(figdir, flight_data,locations_to_dates,lineage, threshold, 
         y.append(i[1])
 
         if i[0] in info_dict:
-            if info_dict[i[0]] == 2 or info_dict[i[0]] == 1:
+            if info_dict[i[0]] == 2 or info_dict[i[0]] == 1 or info_dict[i[0]] == 0:
                 reported_dict[i[0]] = "lightgrey"
             else:
                 reported_dict[i[0]] = "white"
