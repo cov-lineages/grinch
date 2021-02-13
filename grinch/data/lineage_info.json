@@ -4,20 +4,49 @@
     "snps": "aa:E:P71L;aa:N:T205I;aa:orf1a:K1655N;aa:S:D80A;aa:S:D215G;aa:S:K417N;aa:S:A701V;aa:S:N501Y;aa:S:E484K",    
     "min_snps": 5,
     "max_snps": 9,
+    "import_data": "Y",
+    "threshold": 300,
+    "detected": "South Africa",
     "source": "https://www.medrxiv.org/content/10.1101/2020.12.21.20248640v1"
     },
     "B.1.1.7": {
         "description":"UK lineage of concern, associated with the N501Y mutation.",
         "snps":"aa:orf1ab:T1001I;aa:orf1ab:A1708D;aa:orf1ab:I2230T;del:11288:9;del:21765:6;del:21991:3;aa:S:N501Y;aa:S:A570D;aa:S:P681H;aa:S:T716I;aa:S:S982A;aa:S:D1118H;aa:Orf8:Q27*;aa:Orf8:R52I;aa:Orf8:Y73C;aa:N:D3L;aa:N:S235F",
         "min_snps": 5,
+        "threshold": 5000,
         "max_snps": 17,
+        "import_data": "Y",
+        "detected": "United Kingdom",
         "source": "https://virological.org/t/preliminary-genomic-characterisation-of-an-emergent-sars-cov-2-lineage-in-the-uk-defined-by-a-novel-set-of-spike-mutations/563"
     },
     "P.1": {
-        "description":"Brazilian lineage with variants of biological significants E484K, N501Y and K417T, described in a recent virological post: <a href='https://virological.org/t/genomic-characterisation-of-an-emergent-sars-cov-2-lineage-in-manaus-preliminary-findings/586' style='color:#86b0a6'>here</a>. P.1 lineage is an alias of lineage B.1.1.28.1. As described in <a href='https://www.nature.com/articles/s41564-020-0770-5' style='color:#86b0a6'>Rambaut et al., 2020</a> when the lineage heirarchy reaches a certain depth (length of 5) lineage names are given an alias to prevent them from becoming infinitely long.",
+        "description":"Brazilian lineage with variants of biological significance E484K, N501Y and K417T, described in a recent virological post: <a href='https://virological.org/t/genomic-characterisation-of-an-emergent-sars-cov-2-lineage-in-manaus-preliminary-findings/586' style='color:#86b0a6'>here</a>. P.1 lineage is an alias of lineage B.1.1.28.1. As described in <a href='https://www.nature.com/articles/s41564-020-0770-5' style='color:#86b0a6'>Rambaut et al., 2020</a> when the lineage heirarchy reaches a certain depth (length of 5) lineage names are given an alias to prevent them from becoming infinitely long.",
         "snps":"aa:orf1ab:S1188L;aa:orf1ab:K1795Q;del:11288:9;aa:S:L18F;aa:S:T20N;aa:S:P26S;aa:S:D138Y;aa:S:R190S;aa:S:K417T;aa:S:E484K;aa:S:N501Y;aa:S:H655Y;aa:S:T1027I;aa:orf3a:G174C;aa:orf8:E92K;aa:N:P80R",
         "min_snps": 10,
         "max_snps": 17,
+        "threshold": 5,
+        "import_data": "Y",
+        "detected": "Brazil",
         "source": "https://virological.org/t/genomic-characterisation-of-an-emergent-sars-cov-2-lineage-in-manaus-preliminary-findings/586"
+    },
+    "A.23.1": {
+        "description":"International lineage with variants of biological significance F157L, V367F, Q613H and P681R, described fully in the preprent: <a href='https://www.medrxiv.org/content/10.1101/2021.02.08.21251393v1' style='color:#86b0a6'>Bugembe et al 2021</a>. Q613H is predicted to be functionally equivalent to the D614G mutation that arose early in 2020.",
+        "snps":"aa:S:F157L;aa:S:V367F;aa:S:Q613H;aa:S:P681R",
+        "min_snps": "NA",
+        "max_snps": "NA",
+        "threshold": "NA",
+        "import_data": "N",
+        "detected": "Uganda",
+        "source": "https://www.medrxiv.org/content/10.1101/2021.02.08.21251393v1"
+    },
+    "B.1.525": {
+        "description":"International lineage with variants of biological significance E484K, Q677H, F888L and a similar suite of deletions to B.1.1.7.",
+        "snps":"aa:orf1ab:L4715F;aa:S:Q52R;aa:S:E484K;aa:S:Q677H;aa:S:F888L;aa:E:L21F;aa:E:I82T;del:11288:9;del:21765:6;del:28278:3",
+        "min_snps": "NA",
+        "max_snps": "NA",
+        "threshold": "NA",
+        "import_data": "N",
+        "detected": "Multiple",
+        "source": "https://github.com/cov-lineages/pango-designation/issues/4"
     }
 }

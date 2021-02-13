@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from epiweeks import Week
 
-
+import pkg_resources
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import cm
 import pandas as pd
@@ -17,7 +17,7 @@ import seaborn as sns
 import numpy as np
 import math
 import os
-
+import json
 # #for testing
 # import argparse
 # parser = argparse.ArgumentParser()
@@ -688,42 +688,58 @@ def cumulative_seqs_over_time(figdir, locations_to_dates,lineage):
     
     plt.savefig(os.path.join(figdir,f"Cumulative_sequence_count_over_time_{lineage}.svg"), format='svg', bbox_inches='tight')
 
+def plot_figures(world_map_file, figdir, metadata, continent_file, flight_data_path):
+    
+    lineage_summary = {}
+    lineage_info = pkg_resources.resource_filename('grinch', f'data/lineage_info.json')
+    with open(lineage_info,"r") as f:
+        read_info = json.load(f)
 
-def plot_figures(world_map_file, figdir, metadata, continent_file, lineages_of_interest,flight_data_b117,flight_data_b1351,flight_data_p1, table_b117, table_b1351, table_p1):
+    lineages_of_interest = []
+    for lineage in read_info:
+        lineages_of_interest.append(lineage)
+        lin_data = read_info[lineage]
+        lineage_summary[lineage] = {
+            "threshold": lin_data["threshold"],
+            "central_loc": lin_data["detected"],
+            "flight_data": None,
+            "import_data" : None
+        }
+        if lin_data["threshold"] != "NA":
+            lineage_summary[lineage]["flight_data"] = os.path.join(flight_data_path, f"{lineage}.csv")
+        if lin_data["import_data"] == "Y":
+            lineage_summary[lineage]["import_data"] = pkg_resources.resource_filename('grinch', f'data/local_imported_{lineage}.csv')
 
     world_map, countries = prep_map(world_map_file)
     country_to_continent = get_continent_mapping(continent_file)
     conversion_dict2, omitted = prep_inputs()
 
     for lineage in lineages_of_interest:
+        print(lineage)
         with_info, locations_to_dates, country_new_seqs, loc_to_earliest_date, country_dates, number_to_date = make_dataframe(metadata, conversion_dict2, omitted, lineage, figdir, countries, world_map)
 
-        if lineage == "B.1.351":
-            threshold = 300
-            flight_data = flight_data_b1351
-            relevant_table = table_b1351
-            central_loc = "South Africa"
-        elif lineage == "B.1.1.7":
-            threshold = 5000
-            flight_data = flight_data_b117
-            relevant_table = table_b117
-            central_loc = "United Kingdom"
-        elif lineage == "P.1":
-            threshold = 5
-            flight_data = flight_data_p1
-            relevant_table = table_p1
-            central_loc = "Brazil"
+        lineage_data = lineage_summary[lineage]
+        threshold = lineage_data["threshold"]
+        flight_data = lineage_data["flight_data"]
+        central_loc = lineage_data["central_loc"]
+        relevant_table = lineage_data["import_data"]
 
-        info_dict = make_transmission_map(figdir, world_map, lineage, relevant_table)
+        if relevant_table:
+            info_dict = make_transmission_map(figdir, world_map, lineage, relevant_table)
+
+        if flight_data:
+            flight_data_plot(figdir, flight_data,locations_to_dates,lineage, threshold, info_dict, central_loc)
+
         
-        flight_data_plot(figdir, flight_data,locations_to_dates,lineage, threshold, info_dict, central_loc)
-            
-
         plot_date_map(figdir, with_info, lineage, number_to_date)
+        print(f"{lineage} date map")
         plot_count_map(figdir, with_info, lineage)
+        print(f"{lineage} count map")
         plot_bars(figdir, locations_to_dates, lineage)
+        print(f"{lineage} bars")
         plot_bars_by_freq(figdir, locations_to_dates, country_new_seqs, loc_to_earliest_date,lineage)
         cumulative_seqs_over_time(figdir,locations_to_dates,lineage)
+        print(f"{lineage} cumseq")
         plot_frequency_new_sequences(figdir, locations_to_dates, country_new_seqs, loc_to_earliest_date, lineage)
         plot_count_and_frequency_rolling(figdir,locations_to_dates, country_dates, country_to_continent, lineage)
 

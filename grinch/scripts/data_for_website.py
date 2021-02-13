@@ -4,8 +4,10 @@ import argparse
 import collections
 from grinch import __version__
 from datetime import date
+from datetime import datetime
 import pangoLEARN
 import pangolin
+import pkg_resources
 
 import json
 import csv
@@ -16,15 +18,7 @@ def parse_args():
     parser.add_argument("--metadata", required=True, help="metadata file", dest="metadata")
     parser.add_argument("--data", help="output data file", dest="data")
     parser.add_argument("--outdir", help="output dir", dest="outdir")
-    parser.add_argument("--lineage-info", help="lineage_info",dest="lineage_info")
     parser.add_argument("--variants-info", help="variants_info",dest="variants_info")
-    parser.add_argument("--time", help="timestamp", dest="time")
-    parser.add_argument("--import-report-b117", help="import report", dest="import_report_b117")
-    parser.add_argument("--import-report-b1351", help="import report", dest="import_report_b1351")
-    parser.add_argument("--import-report-p1", help="import report", dest="import_report_p1")
-    parser.add_argument("--raw-data-b117", help="raw data", dest="raw_data_b117")
-    parser.add_argument("--raw-data-b1351", help="raw data", dest="raw_data_b1351")
-    parser.add_argument("--raw-data-p1", help="raw data", dest="raw_data_p1")
     return parser.parse_args()
 
 def parse_import_data(import_report):
@@ -76,12 +70,12 @@ def parse_raw_data(raw_data_csv):
             raw_data.append(row_data)
     return raw_data
     
-def make_summary_data(metadata,import_data,raw_data):
+def make_summary_data(metadata,import_data,raw_data,lineages_of_concern):
     # add lineages and sub lineages into a dict with verity's summary information about each lineage
 
     summary_dict = collections.defaultdict(dict)
 
-    for lineage in ["B.1.351","B.1.1.7","P.1"]:
+    for lineage in lineages_of_concern:
         summary_dict[lineage] = {"Lineage":lineage,
                                 "Country count":0,
                                 "Countries":collections.Counter(),
@@ -89,15 +83,10 @@ def make_summary_data(metadata,import_data,raw_data):
                                 "Count":0,
                                 "Date":collections.Counter(),
                                 "Travel history":collections.Counter(),
-                                "Likely origin":"",
                                 "import_report":import_data[lineage],
                                 "aggregate_data":raw_data[lineage]
                                 }
-    
-    summary_dict["B.1.1.7"]["Likely origin"] = "United Kingdom"
-    summary_dict["B.1.351"]["Likely origin"] = "South Africa"
-    summary_dict["P.1"]["Likely origin"] = "Brazil"
-    # compile data for json
+
     conversion_dict = get_conversion_dict()
 
     with open(metadata,"r") as f:
@@ -111,7 +100,7 @@ def make_summary_data(metadata,import_data,raw_data):
                 travel_history = row["travel_history"]
                 lineage = row["lineage"]
 
-                if lineage != "" and lineage in ["B.1.1.7","B.1.351","P.1"]:
+                if lineage != "" and lineage in lineages_of_concern:
 
                     if country == "Caribbean":
                         country = row["sequence_name"].split("/")[0]
@@ -167,7 +156,7 @@ def make_summary_data(metadata,import_data,raw_data):
     return summary_dict
 
 
-def make_constellation_data(metadata,variant_info):
+def make_constellation_data(metadata,variant_info,lineages_of_concern):
     # add constellations into a dict 
 
     summary_dict = collections.defaultdict(dict)
@@ -191,7 +180,7 @@ def make_constellation_data(metadata,variant_info):
             
                 d = date.fromisoformat(row["sample_date"])
                 constellation = row["constellation"].split()
-                if constellation != "" and constellation in ["B.1.1.7","B.1.351","P.1"]:
+                if constellation != "" and constellation in lineages_of_concern:
                     
                     summary_dict[lineage]["Countries"][country]+=1
                     
@@ -244,12 +233,22 @@ def make_report():
     args = parse_args()
 
     # loading constant info about lineages
-    with open(args.lineage_info,"r") as f:
+    lineage_info = pkg_resources.resource_filename('grinch', f'data/lineage_info.json')
+    with open(lineage_info,"r") as f:
         lineage_info = json.load(f)
 
-    for lineage in ["B.1.351","B.1.1.7","P.1"]:
-
+    lineages_of_concern = []
+    import_data = {}
+    for lineage in lineage_info:
+        lineages_of_concern.append(lineage)
         lin_data = lineage_info[lineage]
+
+        if lin_data["import_data"] == "Y":
+            import_report_file = pkg_resources.resource_filename('grinch', f'data/local_imported_{lineage}.csv')
+            lineage_import_data = parse_import_data(import_report_file)
+            import_data[lineage] = lineage_import_data
+        else:
+            import_data[lineage] = "NA"
         
         # write lineage page site
         with open(f'{args.outdir}/report/global_report_{lineage}.md','w') as fw:
@@ -259,7 +258,9 @@ def make_report():
             fw.write(f'version: "{__version__}"\n')
             fw.write(f'v: "{pangolin.__version__}"\n')
             fw.write(f'pv: "{pangoLEARN.__version__}"\n')
-            fw.write(f'timestamp: "{args.time}"\n')
+            now = datetime.now()
+            date_time = now.strftime("%Y-%m-%d, %H:%M GMT")
+            fw.write(f'timestamp: "{date_time}"\n')
             fw.write(f'today: "{date.today()}"\n')
             for i in lin_data:
                 if i =='snps':
@@ -270,28 +271,14 @@ def make_report():
                     fw.write(f'{i}: "{lin_data[i]}"\n')
             fw.write('---\n')
 
-    # import report info
-    import_data_b117 = parse_import_data(args.import_report_b117)
-    import_data_b1351 = parse_import_data(args.import_report_b1351)
-    import_data_p1 = parse_import_data(args.import_report_p1)
-    import_data = {
-                    "B.1.1.7": import_data_b117,
-                    "B.1.351": import_data_b1351,
-                    "P.1": import_data_p1
-                    }
-
     # raw data
-    args.raw_data_b1351
-    raw_data_b117 = parse_raw_data(args.raw_data_b117)
-    raw_data_b1351 = parse_raw_data(args.raw_data_b1351)
-    raw_data_p1 = parse_raw_data(args.raw_data_p1)
-    raw_data = {
-                "B.1.1.7": raw_data_b117,
-                "B.1.351": raw_data_b1351,
-                "P.1": raw_data_p1
-                }
-
-    summary_data = make_summary_data(args.metadata,import_data,raw_data)
+    raw_data = {}
+    for lineage in lineages_of_concern:
+        raw_data_file = os.path.join(args.outdir,"figures",f"{lineage}_raw_data.csv")
+        lineage_raw_data = parse_raw_data(raw_data_file)
+        raw_data[lineage] = lineage_raw_data
+    
+    summary_data = make_summary_data(args.metadata,import_data,raw_data,lineages_of_concern)
 
     with open(args.data,"w") as fw:
         json.dump(summary_data, fw, indent=4)

@@ -94,7 +94,7 @@ def main(sysargs = sys.argv[1:]):
     """
 
     lineages = ["B.1.1.7","B.1.351","P.1"]
-    config["lineages_of_interest"] = lineages
+    config["lineages_of_concern"] = lineages
     
     config["reference"] = pkg_resources.resource_filename('grinch', 'data/reference.fasta')
     config["lineage_info"] = pkg_resources.resource_filename('grinch', 'data/lineage_info.json')
