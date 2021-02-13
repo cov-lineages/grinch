@@ -32,23 +32,23 @@ def get_description_dict(description_file):
 
 def get_conversion_dict():
     conversion_dict = {}
-    conversion_dict["United_States"] = "United_States_of_America"
-    conversion_dict["USA"] = "United_States_of_America"
+    conversion_dict["United_States"] = "United States of America"
+    conversion_dict["USA"] = "United States of America"
     conversion_dict["Viet_Nam"] = "Vietnam"
     conversion_dict["North_Macedonia"] = "Macedonia"
-    conversion_dict["Serbia"] = "Republic_of_Serbia"
-    conversion_dict["Côte_d’Ivoire"] = "Ivory_Coast"
-    conversion_dict["Cote_dIvoire"] = "Ivory_Coast"
-    conversion_dict["CÔTE_D'IVOIRE"] = "Ivory_Coast"
-    conversion_dict["Czech_Repubic"] = "Czech_Republic"
-    conversion_dict["UK"] = "United_Kingdom"
-    conversion_dict["Timor-Leste"] = "East_Timor"
-    conversion_dict["DRC"] = "Democratic_Republic_of_the_Congo"
+    conversion_dict["Serbia"] = "Republic of Serbia"
+    conversion_dict["Côte_d’Ivoire"] = "Ivory Coast"
+    conversion_dict["Cote_dIvoire"] = "Ivory Coast"
+    conversion_dict["CÔTE_D'IVOIRE"] = "Ivory Coast"
+    conversion_dict["Czech_Repubic"] = "Czech Republic"
+    conversion_dict["UK"] = "United Kingdom"
+    conversion_dict["Timor-Leste"] = "East Timor"
+    conversion_dict["DRC"] = "Democratic Republic of the Congo"
     conversion_dict["Saint_Barthélemy"] = "Saint-Barthélemy"
     conversion_dict["Saint_Martin"] = "Saint-Martin"
     conversion_dict["Curacao"] = "Curaçao"
-    conversion_dict["St. Lucia"] = "Saint_Lucia"
-    conversion_dict["GABORONE"] = "Botswana"
+    conversion_dict["St. Lucia"] = "Saint Lucia"
+    conversion_dict["Gaborone"] = "Botswana"
     return conversion_dict
 
 def make_summary_info(metadata, notes, designations, json_outfile):
@@ -92,11 +92,12 @@ def make_summary_info(metadata, notes, designations, json_outfile):
 
                 if lineage != "" and lineage in description_dict:
                     
-                    if country.upper() == "CARIBBEAN":
-                        seq_country = row["sequence_name"].split("/")[0].upper().replace(" ","_")
+                    if country == "Caribbean":
+                        country = row["sequence_name"].split("/")[0]
                     
                     if country in conversion_dict:
                         country = conversion_dict[country]
+                        print(country)
                     
                     summary_dict[lineage]["Countries"][country]+=1
 

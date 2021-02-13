@@ -42,6 +42,27 @@ def parse_import_data(import_report):
             import_data.append(row_data)
     return import_data
 
+def get_conversion_dict():
+    conversion_dict = {}
+    conversion_dict["United_States"] = "United States of America"
+    conversion_dict["USA"] = "United States of America"
+    conversion_dict["Viet_Nam"] = "Vietnam"
+    conversion_dict["North_Macedonia"] = "Macedonia"
+    conversion_dict["Serbia"] = "Republic of Serbia"
+    conversion_dict["Côte_d’Ivoire"] = "Ivory Coast"
+    conversion_dict["Cote_dIvoire"] = "Ivory Coast"
+    conversion_dict["CÔTE_D'IVOIRE"] = "Ivory Coast"
+    conversion_dict["Czech_Repubic"] = "Czech Republic"
+    conversion_dict["UK"] = "United Kingdom"
+    conversion_dict["Timor-Leste"] = "East Timor"
+    conversion_dict["DRC"] = "Democratic Republic of the Congo"
+    conversion_dict["Saint_Barthélemy"] = "Saint-Barthélemy"
+    conversion_dict["Saint_Martin"] = "Saint-Martin"
+    conversion_dict["Curacao"] = "Curaçao"
+    conversion_dict["St. Lucia"] = "Saint Lucia"
+    conversion_dict["Gaborone"] = "Botswana"
+    return conversion_dict
+
 def parse_raw_data(raw_data_csv):
     raw_data = []
     with open(raw_data_csv, "r") as f:
@@ -77,18 +98,27 @@ def make_summary_data(metadata,import_data,raw_data):
     summary_dict["B.1.351"]["Likely origin"] = "South Africa"
     summary_dict["P.1"]["Likely origin"] = "Brazil"
     # compile data for json
+    conversion_dict = get_conversion_dict()
+
     with open(metadata,"r") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if row["sample_date"]:
                 country = row["country"]
-            
+
                 d = date.fromisoformat(row["sample_date"])
 
                 travel_history = row["travel_history"]
                 lineage = row["lineage"]
 
                 if lineage != "" and lineage in ["B.1.1.7","B.1.351","P.1"]:
+
+                    if country == "Caribbean":
+                        country = row["sequence_name"].split("/")[0]
+                    
+                    if country in conversion_dict:
+                        country = conversion_dict[country]
+                    country = country.replace("_"," ")
                     
                     summary_dict[lineage]["Countries"][country]+=1
                     
