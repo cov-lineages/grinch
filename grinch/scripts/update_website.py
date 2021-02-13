@@ -29,7 +29,28 @@ def get_description_dict(description_file):
                     lineages[lin] = f"Lineage reassigned. {tokens[1]}"
                 lineages[tokens[0]]= tokens[1]
     return lineages
-            
+
+def get_conversion_dict():
+    conversion_dict = {}
+    conversion_dict["United_States"] = "United_States_of_America"
+    conversion_dict["USA"] = "United_States_of_America"
+    conversion_dict["Viet_Nam"] = "Vietnam"
+    conversion_dict["North_Macedonia"] = "Macedonia"
+    conversion_dict["Serbia"] = "Republic_of_Serbia"
+    conversion_dict["Côte_d’Ivoire"] = "Ivory_Coast"
+    conversion_dict["Cote_dIvoire"] = "Ivory_Coast"
+    conversion_dict["CÔTE_D'IVOIRE"] = "Ivory_Coast"
+    conversion_dict["Czech_Repubic"] = "Czech_Republic"
+    conversion_dict["UK"] = "United_Kingdom"
+    conversion_dict["Timor-Leste"] = "East_Timor"
+    conversion_dict["DRC"] = "Democratic_Republic_of_the_Congo"
+    conversion_dict["Saint_Barthélemy"] = "Saint-Barthélemy"
+    conversion_dict["Saint_Martin"] = "Saint-Martin"
+    conversion_dict["Curacao"] = "Curaçao"
+    conversion_dict["St. Lucia"] = "Saint_Lucia"
+    conversion_dict["GABORONE"] = "Botswana"
+    return conversion_dict
+
 def make_summary_info(metadata, notes, designations, json_outfile):
     # add lineages and sub lineages into a dict with verity's summary information about each lineage
     
@@ -58,6 +79,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                 print("Lineage not found", lineage)
 
     # compile data for json
+    conversion_dict = get_conversion_dict()
     with open(metadata,"r") as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -69,6 +91,12 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                 lineage = row["lineage"]
 
                 if lineage != "" and lineage in description_dict:
+                    
+                    if country.upper() == "CARIBBEAN":
+                        seq_country = row["sequence_name"].split("/")[0].upper().replace(" ","_")
+                    
+                    if country in conversion_dict:
+                        country = conversion_dict[country]
                     
                     summary_dict[lineage]["Countries"][country]+=1
 
