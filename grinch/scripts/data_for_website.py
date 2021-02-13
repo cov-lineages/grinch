@@ -119,7 +119,7 @@ def make_summary_data(metadata,import_data,raw_data):
         summary_dict[lineage]["Country count"] = len(countries)
         country_info = ""
         total = sum(countries.values())
-        for k in countries.most_common(50):
+        for k in countries.most_common(200):
             
             pcent = round((100*k[1])/total, 0)
             country_info += f"{k[0]} {k[1]}, "
