@@ -9,7 +9,7 @@ output_prefix = config["output_prefix"]
 rule all:
     input:
         config["outdir"] + "/2/lineages.metadata.csv",
-        os.path.join(config["outdir"],"report", f"{output_prefix}_B.1.1.7.md")
+        os.path.join(config["outdir"],"report","grinch_data.json")
 
 rule gisaid_process_json:
     input:
