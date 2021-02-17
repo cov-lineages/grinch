@@ -97,7 +97,6 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                     
                     if country in conversion_dict:
                         country = conversion_dict[country]
-                        print(country)
                     
                     summary_dict[lineage]["Countries"][country]+=1
 
