@@ -34,7 +34,7 @@ Switzerland,2020-12-24,2021-01-05,1,,https://www.bag.admin.ch/bag/fr/home/das-ba
 Brazil,2020-12-21,2021-01-18,1,SGTF,https://www.dropbox.com/s/y99g4uw6s7za01c/CADDE%20genomic%20report%2031%20Dec%202020.pdf?dl=0
 Vietnam,2020-12-24,,0,travellers,https://www.telegraph.co.uk/news/2021/01/02/vietnam-reports-first-case-new-coronavirus-variant-woman-returning/
 Luxembourg,2020-12-29,,0,travellers,https://covid19.public.lu/fr/actualite-covid-19/communiques/2021/01/02-covid-variante.html
-New Zealand,2020-12-25,,0,travellers,https://www.rnz.co.nz/news/national/433973/covid-19-update-19-new-imported-cases-in-past-three-days
+New Zealand,2020-12-25,2021-02-15,1,travellers,https://www.rnz.co.nz/news/national/433973/covid-19-update-19-new-imported-cases-in-past-three-days
 Hong Kong,2020-12-23,,0,travellers,https://uk.reuters.com/article/us-health-coronavirus-hongkong/uk-coronavirus-variant-likely-found-in-hong-kong-as-city-secures-vaccine-supplies-idUKKBN28X1E1
 Cyprus,2020-12-20,,0,travellers,https://cyprus-mail.com/2021/01/03/coronavirus-new-fast-spreading-british-strain-found-in-cyprus/
 Thailand,2021-01-03,,0,travellers,https://www.thestar.com.my/aseanplus/aseanplus-news/2021/01/03/thailand-finds-new-strain-of-covid-19-from-uk-in-four-britons
@@ -81,3 +81,4 @@ Saudi Arabia,2021-01-12,,0,community_sequencing,https://www.who.int/publications
 Uzbekistan,2021-02-09,,,community_sequencing,https://www.who.int/publications/m/item/weekly-epidemiological-update---09-february-2021
 Cambodia,2021-02-09,,1,community_sequencing,https://www.who.int/publications/m/item/weekly-epidemiological-update---09-january-2021
 Lithuania,2021-02-09,,1,community_sequencing,https://www.who.int/publications/m/item/weekly-epidemiological-update---09-january-2021
+Iraq,2021-02-15,2021-02-15,1community_sequencing,https://www.france24.com/en/live-news/20210215-iraq-detects-new-uk-based-strain-reimposes-partial-lockdown
