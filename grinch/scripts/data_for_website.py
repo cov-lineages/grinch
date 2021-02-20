@@ -41,7 +41,7 @@ def get_conversion_dict():
     conversion_dict["United_States"] = "United States of America"
     conversion_dict["USA"] = "United States of America"
     conversion_dict["Viet_Nam"] = "Vietnam"
-    conversion_dict["North_Macedonia"] = "Macedonia"
+    conversion_dict["Macedonia"] = "North_Macedonia"
     conversion_dict["Serbia"] = "Republic of Serbia"
     conversion_dict["Côte_d’Ivoire"] = "Ivory Coast"
     conversion_dict["Cote_dIvoire"] = "Ivory Coast"
