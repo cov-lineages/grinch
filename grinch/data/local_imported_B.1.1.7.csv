@@ -49,7 +49,7 @@ Slovakia,2021-01-05,2021-01-05,1,community_sequencing,https://spectator.sme.sk/c
 Russia,2021-01-10,,0,travellers,https://www.rferl.org/a/russia-confirms-first-case-of-new-coronavirus-strain/31041057.html
 Mexico,2020-12-29,,0,travellers,https://www.vallartadaily.com/new-coronavirus-strain-first-seen-in-britain-confirmed-in-mexico/
 Ecuador,2021-01-06,,0,travellers,https://www.aa.com.tr/en/americas/ecuador-records-first-case-of-new-coronavirus-variant/2106621
-Sri Lanka,2021-01-02,,,,GISAID
+Sri Lanka,2021-01-02,,,,https://www.newsfirst.lk/2021/02/12/uk-covid-strain-found-in-sri-lanka-dr-chandima-jeewandara/
 Malaysia,2020-12-28,,0,travellers,https://www.malaymail.com/news/malaysia/2021/01/11/uk-variant-of-covid-19-has-reached-malaysia-dr-noor-hisham-confirms/1939483
 Czech Republic,2021-01-01,,,,GISAIDTravellerToGermanyEPI_ISL_824943
 Hungary,2021-01-07,2021-01-07,1,community_sequencing,GISAID
@@ -82,4 +82,7 @@ Uzbekistan,2021-02-09,,,community_sequencing,https://www.who.int/publications/m/
 Cambodia,2021-02-09,,1,community_sequencing,https://www.who.int/publications/m/item/weekly-epidemiological-update---09-january-2021
 Lithuania,2021-02-09,,1,community_sequencing,https://www.who.int/publications/m/item/weekly-epidemiological-update---09-january-2021
 Iraq,2021-02-15,2021-02-15,1,community_sequencing,https://www.france24.com/en/live-news/20210215-iraq-detects-new-uk-based-strain-reimposes-partial-lockdown
-Bosnia-Herzegovina,2021-02-09,,0,community_sequencng,http://www.sarajevotimes.com/new-variant-of-coronavirus-discovered-in-bosnia-and-herzegovina-as-well/
+Bosnia and Herzegovina,2021-02-09,,0,community_sequencng,http://www.sarajevotimes.com/new-variant-of-coronavirus-discovered-in-bosnia-and-herzegovina-as-well/
+Nepal,2021-02-16,,1,community_sequencing,https://www.who.int/publications/m/item/weekly-epidemiological-update---16-february-2021
+Bhutan,2021-02-16,,1,community_sequencing,https://www.who.int/publications/m/item/weekly-epidemiological-update---16-february-2021
+Estonia,2021-02-16,,1,community_sequencing,https://www.who.int/publications/m/item/weekly-epidemiological-update---16-february-2021
