@@ -48,14 +48,15 @@ def prep_map(world_map_file):
 
 def prep_inputs():
 
-    omitted = ["ST_EUSTATIUS", "CRIMEA"] #too small, no shape files
+    omitted = ["ST_EUSTATIUS", "CRIMEA","Liechtenstein"] #too small, no shape files
 
     conversion_dict = {}
 
     conversion_dict["United_States"] = "United_States_of_America"
     conversion_dict["USA"] = "United_States_of_America"
     conversion_dict["Viet_Nam"] = "Vietnam"
-    conversion_dict["North_Macedonia"] = "Macedonia"
+    conversion_dict["Macedonia"] = "North_Macedonia"
+    conversion_dict["North_Macedonia"] = "North_Macedonia"
     conversion_dict["Serbia"] = "Republic_of_Serbia"
     conversion_dict["Côte_d’Ivoire"] = "Ivory_Coast"
     conversion_dict["Cote_dIvoire"] = "Ivory_Coast"
@@ -69,6 +70,7 @@ def prep_inputs():
     conversion_dict["Curacao"] = "Curaçao"
     conversion_dict["St. Lucia"] = "Saint_Lucia"
     conversion_dict["GABORONE"] = "Botswana"
+    conversion_dict["GUADELOUPE"] = "Guadeloupe"
 
     conversion_dict2 = {}
 
