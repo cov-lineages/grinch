@@ -216,26 +216,30 @@ def make_transmission_map(figdir, world_map, lineage, relevant_table):
             
     transmission_df = pd.DataFrame(df_dict)
     
-    try:
-        with_trans_info = world_map.merge(transmission_df, how="outer")
-        trans_nona = with_trans_info.fillna(-1)
-        trans_nona = trans_nona.dropna()
+    
+    with_trans_info = world_map.merge(transmission_df, how="left")
+    trans_nona = with_trans_info.fillna(-1)
+    trans_nona = trans_nona.dropna()
 
-        colour_dict = {0.0:"#edd1cb", 1.0: '#aa688f', 2.0:'#2d1e3e', -1:"#d3d3d3"}
-        label_dict = {0.0:"status_unknown",1.0:"imported_only",2.0:"local_transmission", -1:"No variant recorded"}
+    colour_dict = {0.0:"#edd1cb", 1.0: '#aa688f', 2.0:'#2d1e3e', -1:"#d3d3d3"}
+    label_dict = {0.0:"status_unknown",1.0:"imported_only",2.0:"local_transmission", -1:"No variant recorded"}
 
-        fig, ax = plt.subplots(figsize=(11,11))
-        trans_nona.plot(ax=ax, color=trans_nona["transmission_number"].map(colour_dict))
+    fig, ax = plt.subplots(figsize=(11,11))
+    trans_nona.plot(ax=ax, color=trans_nona["transmission_number"].map(colour_dict))
 
-        patches = [plt.plot([],[], marker="o", ms=10, ls="", mec=None, color=colour_dict[i], 
-                    label="{:s}".format(label_dict[i]) )[0]  for i in (label_dict.keys())]
+    patches = [plt.plot([],[], marker="o", ms=10, ls="", mec=None, color=colour_dict[i], 
+                label="{:s}".format(label_dict[i]) )[0]  for i in (label_dict.keys())]
 
-        ax.legend(bbox_to_anchor=(-.03, 1.05),fontsize=8,frameon=False)
+    ax.legend(bbox_to_anchor=(-.03, 1.05),fontsize=8,frameon=False)
 
-        ax.axis("off")            
-        plt.savefig(os.path.join(figdir,f"Map_of_{lineage}_local_transmission.svg"), format='svg', bbox_inches='tight')
-    except:
-        print("Merge failed")
+    ax.axis("off")            
+    plt.savefig(os.path.join(figdir,f"Map_of_{lineage}_local_transmission.svg"), format='svg', bbox_inches='tight')
+
+    print("Missing countries in import map:")
+    for i in transmission_df['admin']:
+        if i not in list(with_trans_info['admin']):
+            print(i)
+
     return info_dict
 
 def plot_date_map(figdir, with_info, lineage, number_to_date):
