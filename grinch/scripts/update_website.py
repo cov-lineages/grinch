@@ -162,7 +162,8 @@ def get_parent(lineage):
             "L":"B.1.1.10",
             "M":"B.1.1.294",
             "N":"B.1.1.33",
-            "P":"B.1.1.28"}
+            "P":"B.1.1.28",
+            "R":"B.1.1.316"}
     default_mapping = {"B":"A"}
     lin_list = lineage.split(".")
     
