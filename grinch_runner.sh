@@ -10,7 +10,7 @@ cd /raid/shared/grinch && git pull #gets any updates to the reports in the data 
 
 python setup.py install
 
-grinch -t 40 -i /raid/shared/grinch/grinch/data/config.yaml --outdir "/raid/shared/$TODAY" --output-prefix global_report
+grinch -t 2 -i /raid/shared/grinch/grinch/data/config.yaml --outdir "/raid/shared/$TODAY" --output-prefix global_report
 
 cd /home/shared/lineages-website && git pull
 
