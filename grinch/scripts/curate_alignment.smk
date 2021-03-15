@@ -5,7 +5,7 @@ import collections
 
 config["trim_start"] = 265
 config["trim_end"] = 29674
-
+config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1","P.2"]
 
 rule all:
     input:
@@ -29,8 +29,9 @@ rule filter_alignment:
             for l in f:
                 l = l.rstrip("\n")
                 name,lineage = l.split(",")
-                lineages[name]=lineage
-                csv_len +=1
+                if lineage not in config["lineages_of_concern"]:
+                    lineages[name]=lineage
+                    csv_len +=1
         with open(output.csv,"w") as fw:
             with open(input.full_csv,"r") as f:
             
