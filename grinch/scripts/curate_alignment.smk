@@ -48,12 +48,14 @@ rule filter_alignment:
                         new_row["lineage"] = lineages[name]
                         writer.writerow(new_row)
                         
-
+        written = {}
         with open(output.fasta,"w") as fw:
             for record in SeqIO.parse(input.fasta, "fasta"):
                 record.id = record.id.replace("SouthAfrica","South_Africa")
-                if record.id in lineages:
+                if record.id in lineages and not record.id in written:
                     fw.write(f">{record.id}\n{record.seq}\n")
+
+                    written[record.id]=1
                     seqs_len +=1
         
         print("Number of sequences in lineages csv", csv_len)
