@@ -6,6 +6,7 @@ import collections
 config["trim_start"] = 265
 config["trim_end"] = 29674
 config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1","P.2"]
+config["outgroups"] = "/raid/shared/grinch/grinch/data/outgroups.csv"
 
 rule all:
     input:
@@ -59,9 +60,26 @@ rule filter_alignment:
         print("Number of sequences found on gisaid", seqs_len)
         
 
-rule run_training:
+rule hash_non_unique_seqs:
     input:
         fasta = os.path.join(config["outdir"],"alignment.filtered.fasta"),
+        outgroups = config["outgroups"]
+    output:
+        fasta = os.path.join(config["outdir"],"alignment.unique.fasta"),
+        metadata = os.path.join(config["outdir"],"unique_hash.csv")
+    shell:
+        """
+        python /raid/shared/grinch/grinch/scripts/hash_non_unique_seqs.py \
+        --in-fasta {input.fasta:q} \
+        --outgroups {input.outgroups:q} \
+        --out-fasta {output.fasta:q} \
+        --out-metadata {output.metadata:q} 
+        """
+
+
+rule run_training:
+    input:
+        fasta = os.path.join(config["outdir"],"alignment.unique.fasta"),
         csv = os.path.join(config["outdir"],"lineages.metadata.filtered.csv"),
         reference = config["reference"]
     output:
