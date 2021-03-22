@@ -18,14 +18,17 @@ rule filter_alignment:
     input:
         csv = config["lineages_csv"],
         fasta = os.path.join(config["datadir"],"0","gisaid.UH.RD.aligned.fasta"),
-        full_csv = os.path.join(config["datadir"],"2","lineages.metadata.csv"),
+        full_csv = os.path.join(config["datadir"],"2","lineages.metadata.csv")
     output:
         fasta = os.path.join(config["outdir"],"alignment.filtered.fasta"),
-        csv = os.path.join(config["outdir"],"lineages.metadata.filtered.csv")
+        csv = os.path.join(config["outdir"],"lineages.metadata.filtered.csv"),
+        csv_all = os.path.join(config["outdir"],"lineages.designated.csv")
     run:
         csv_len = 0
         seqs_len = 0
         lineages = {}
+        all_lineages = {}
+        all_len = 0
         with open(input.csv,"r") as f:
             for l in f:
                 l = l.rstrip("\n")
@@ -33,21 +36,31 @@ rule filter_alignment:
                 if lineage not in config["lineages_of_concern"]:
                     lineages[name]=lineage
                     csv_len +=1
+                all_lineages[name]=lineage
+                all_len +=1
         with open(output.csv,"w") as fw:
-            with open(input.full_csv,"r") as f:
-            
-                reader = csv.DictReader(f)
-                header = reader.fieldnames
+            with open(output.csv_all,"w") as fw2:
+                with open(input.full_csv,"r") as f:
+                
+                    reader = csv.DictReader(f)
+                    header = reader.fieldnames
 
-                writer = csv.DictWriter(fw, fieldnames=header, lineterminator="\n")
-                writer.writeheader()
-                for row in reader:
-                    name = row["sequence_name"].replace("SouthAfrica","South_Africa")
-                    if name in lineages:
-                        new_row = row
-                        new_row["lineage"] = lineages[name]
-                        writer.writerow(new_row)
-                        
+                    writer = csv.DictWriter(fw, fieldnames=header, lineterminator="\n")
+                    writer.writeheader()
+
+                    writer2 = csv.DictWriter(fw2, fieldnames=header, lineterminator="\n")
+                    writer2.writeheader()
+
+                    for row in reader:
+                        name = row["sequence_name"].replace("SouthAfrica","South_Africa")
+                        if name in lineages:
+                            new_row = row
+                            new_row["lineage"] = lineages[name]
+                            writer.writerow(new_row)
+                        if name in all_lineages:
+                            all_row = row
+                            all_row["lineage"] = all_lineages[name]
+                            writer2.writerow(all_row)
         written = {}
         with open(output.fasta,"w") as fw:
             for record in SeqIO.parse(input.fasta, "fasta"):
@@ -58,7 +71,8 @@ rule filter_alignment:
                     written[record.id]=1
                     seqs_len +=1
         
-        print("Number of sequences in lineages csv", csv_len)
+        print("Number of sequences in gisaid designated", all_len)
+        print("Number of sequences going into pangolearn training (minus lineages of concern)",csv_len)
         print("Number of sequences found on gisaid", seqs_len)
         
 
@@ -78,6 +92,32 @@ rule hash_non_unique_seqs:
         --out-metadata {output.metadata:q} 
         """
 
+rule align_with_minimap2:
+    input:
+        fasta = os.path.join(config["outdir"],"alignment.unique.fasta"),
+        reference = config["reference"]
+    output:
+        sam = os.path.join(config["outdir"],"alignment.sam")
+    shell:
+        """
+        minimap2 -a -x asm5 -t {workflow.cores} \
+        {input.reference:q} \
+        {input.fasta:q} > {output.sam:q}
+        """
+
+rule get_variants:
+    input:
+        sam = os.path.join(config["outdir"],"alignment.sam")
+    output:
+        csv = os.path.join(config["outdir"],"variants.csv")
+    shell:
+    """
+    gofasta sam variants -t {workflow.threads} \
+      --samfile {input.sam:q} \
+      --reference {config[reference]} \
+      --genbank {config[genbank_ref]} \
+      --outfile {output.csv}
+    """
 
 rule run_training:
     input:
