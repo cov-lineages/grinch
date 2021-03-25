@@ -111,13 +111,13 @@ rule get_variants:
     output:
         csv = os.path.join(config["outdir"],"variants.csv")
     shell:
-    """
-    gofasta sam variants -t {workflow.threads} \
-      --samfile {input.sam:q} \
-      --reference {config[reference]} \
-      --genbank {config[genbank_ref]} \
-      --outfile {output.csv}
-    """
+        """
+        gofasta sam variants -t {workflow.threads} \
+        --samfile {input.sam:q} \
+        --reference {config[reference]} \
+        --genbank {config[genbank_ref]} \
+        --outfile {output.csv}
+        """
 
 rule run_training:
     input:
