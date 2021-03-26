@@ -314,7 +314,7 @@ def plot_bars(figdir, locations_to_dates, lineage):
         y.append(np.log10(count))
         x.append(location.replace("_", " ").title())
 
-    fig, ax = plt.subplots(1,1, figsize=(14,4), frameon=False)
+    fig, ax = plt.subplots(1,1, figsize=(17,4), frameon=False)
 
     plt.bar(x,y,color="#86b0a6")
 
@@ -448,7 +448,7 @@ def plot_bars_by_freq(figdir, locations_to_dates, country_new_seqs, loc_to_earli
 
     muted_pal = sns.cubehelix_palette(as_cmap=True)
 
-    fig, ax = plt.subplots(1,1, figsize=(14,4), frameon=False)
+    fig, ax = plt.subplots(1,1, figsize=(17,4), frameon=False)
     
     sns.barplot(x="Country", y="Count", data=df, dodge=False, palette=muted_pal(df["Frequency"]))
     plt.colorbar(cm.ScalarMappable(cmap=muted_pal),  shrink=0.5)
@@ -482,7 +482,7 @@ def plot_frequency_new_sequences(figdir, locations_to_dates, country_new_seqs, l
         text_label_dict[country.replace("_"," ").title()] = f"{len(all_dates)}/{total}"
 
 
-    fig, ax = plt.subplots(figsize=(14,4))
+    fig, ax = plt.subplots(figsize=(17,4))
 
     sort = {k: v for k, v in sorted(voc_frequency.items(), key=lambda item: item[1], reverse=True)}
 
@@ -611,7 +611,7 @@ def plot_count_and_frequency_rolling(figdir,locations_to_dates, country_dates, c
                                         "#D18CAD","#A4A86F","lightgrey",
                                         "#982029"])
 
-    fig, ax = plt.subplots(figsize=(14,4))
+    fig, ax = plt.subplots(figsize=(17,4))
     c = 0
     for i,v in frequency_over_time.items():
         #if len(v) > 10 and i in country_threshold:#so we do this for countries with more than ten days between the first variant sequence and last variant sequence
@@ -632,7 +632,7 @@ def plot_count_and_frequency_rolling(figdir,locations_to_dates, country_dates, c
     plt.savefig(os.path.join(figdir,f"Rolling_average_{lineage}_frequency_per_continent.svg"), format='svg', bbox_inches='tight')
 
     
-    fig, ax = plt.subplots(figsize=(14,4))
+    fig, ax = plt.subplots(figsize=(17,4))
     c = 0
     for i,v in counts_over_time.items():
         # if len(v) > 10 and i in country_threshold:
@@ -679,7 +679,7 @@ def cumulative_seqs_over_time(figdir, locations_to_dates,lineage):
     epiweek_counts = Counter(epiweek_lst)
     sorted_epiweeks = OrderedDict(sorted(epiweek_counts.items()))
 
-    fig, ax1 = plt.subplots(1,1,figsize=(14,4))
+    fig, ax1 = plt.subplots(1,1,figsize=(17,4))
 
     ax1.bar(list(sorted_epiweeks.keys()), list(sorted_epiweeks.values()), color="#86b0a6", width=5)
     ax2 = ax1.twinx()
