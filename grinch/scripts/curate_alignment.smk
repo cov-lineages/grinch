@@ -7,6 +7,7 @@ config["trim_start"] = 265
 config["trim_end"] = 29674
 config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1","P.2"]
 config["outgroups"] = "/raid/shared/grinch/grinch/data/outgroups.csv"
+config["genbank_ref"] = "/raid/shared/grinch/grinch/data/WH04.gb"
 
 rule all:
     input:
