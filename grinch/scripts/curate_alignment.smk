@@ -97,7 +97,7 @@ rule get_variants:
         csv = os.path.join(config["outdir"],"variants.csv")
     shell:
         """
-        gofasta sam variants -t {workflow.threads} \
+        gofasta sam variants -t {workflow.cores} \
         --samfile {input.sam:q} \
         --reference {config[reference]} \
         --genbank {config[genbank_ref]} \
