@@ -76,25 +76,9 @@ rule filter_alignment:
         print("Number of sequences found on gisaid", seqs_len)
         
 
-rule hash_non_unique_seqs:
-    input:
-        fasta = os.path.join(config["outdir"],"alignment.filtered.fasta"),
-        outgroups = config["outgroups"]
-    output:
-        fasta = os.path.join(config["outdir"],"alignment.unique.fasta"),
-        metadata = os.path.join(config["outdir"],"unique_hash.csv")
-    shell:
-        """
-        python /raid/shared/grinch/grinch/scripts/hash_non_unique_seqs.py \
-        --in-fasta {input.fasta:q} \
-        --outgroups {input.outgroups:q} \
-        --out-fasta {output.fasta:q} \
-        --out-metadata {output.metadata:q} 
-        """
-
 rule align_with_minimap2:
     input:
-        fasta = os.path.join(config["outdir"],"alignment.unique.fasta"),
+        fasta = os.path.join(config["outdir"],"alignment.filtered.fasta"),
         reference = config["reference"]
     output:
         sam = os.path.join(config["outdir"],"alignment.sam")
@@ -119,10 +103,73 @@ rule get_variants:
         --outfile {output.csv}
         """
 
+rule add_lineage:
+    input:
+        csv = os.path.join(config["outdir"],"variants.csv"),
+        lineages = os.path.join(config["outdir"],"lineages.designated.csv")
+    output:
+        csv = os.path.join(config["outdir"],"variants.lineages.csv")
+    run:
+        lineages_dict = {}
+        with open(input.lineages,"r") as f:
+            reader= csv.DictReader(f)
+            for row in reader:
+                lineages_dict[row["sequence_name"]] = row["lineage"]
+        with open(output.csv, "w") as fw:
+            fw.write("sequence_name,nucleotide_variants,lineage,why_excluded\n")
+            with open(input.csv,"r") as f:
+                for l in f:
+                    l = l.strip("\n")
+                    name,variants = l.split(",")
+                    if name =="query":
+                        pass
+                    elif name in lineages_dict:
+                        fw.write(f"{name},{variants},{lineage},\n")
+                        
+
+rule downsample:
+    input:
+        csv = os.path.join(config["outdir"],"variants.lineages.csv"),
+        fasta = os.path.join(config["outdir"],"alignment.filtered.fasta")
+    output:
+        csv = os.path.join(config["outdir"],"metadata.copy.csv"),
+        fasta = os.path.join(config["outdir"],"alignment.downsample.fasta")
+    shell:
+        """
+        downsample.py --in-fasta {input.fasta} \
+        --in-metadata {input.csv} \
+        --downsample_lineage_size 10 \
+        --diff 1 \
+        --out-fasta {output.fasta} \
+        --outgroups {config[outgroups]} \
+        --out-metadata {output.csv}
+        """
+
+rule filter_metadata:
+    input:
+        csv = os.path.join(config["outdir"],"metadata.copy.csv"),
+        fasta = os.path.join(config["outdir"],"alignment.downsample.fasta")
+    output:
+        csv = os.path.join(config["outdir"],"metadata.downsample.csv")
+    run:
+        in_downsample = {}
+        for record in SeqIO.parse(input.fasta,"fasta"):
+            in_downsample[record.id] = 1
+
+        with open(output.csv, "w") as fw:
+            fw.write("sequence_name,lineage\n")
+            with open(input.csv, "r") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if row["sequence_name"] in in_downsample:
+                        name = row["sequence_name"]
+                        lineage = row["lineage"]
+                        fw.write(f"{name},{lineage}\n")
+
 rule run_training:
     input:
-        fasta = os.path.join(config["outdir"],"alignment.unique.fasta"),
-        csv = os.path.join(config["outdir"],"lineages.metadata.filtered.csv"),
+        fasta = os.path.join(config["outdir"],"alignment.downsample.fasta"),
+        csv = os.path.join(config["outdir"],"metadata.downsample.csv"),
         reference = config["reference"]
     output:
         headers = os.path.join(config["outdir"],"decisionTreeHeaders_v1.joblib"),
