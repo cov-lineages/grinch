@@ -137,7 +137,7 @@ rule downsample:
         fasta = os.path.join(config["outdir"],"alignment.downsample.fasta")
     shell:
         """
-        downsample.py --in-fasta {input.fasta} \
+        python /raid/shared/grinch/grinch/scripts/downsample.py --in-fasta {input.fasta} \
         --in-metadata {input.csv} \
         --downsample_lineage_size 10 \
         --diff 1 \
