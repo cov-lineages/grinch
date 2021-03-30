@@ -125,7 +125,7 @@ rule add_lineage:
                     if name =="query":
                         pass
                     elif name in lineages_dict:
-                        fw.write(f"{name},{variants},{lineage},\n")
+                        fw.write(f"{name},{variants},{lineages_dict[name]},\n")
                         
 
 rule downsample:
