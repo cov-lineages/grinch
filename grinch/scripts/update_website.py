@@ -127,9 +127,14 @@ def make_summary_info(metadata, notes, designations, json_outfile):
         summary_dict[lineage]["Travel history"] = travel_info
 
         countries = summary_dict[lineage]["Countries"]
-        summary_dict[lineage]["Country counts"] = countries
+        
         country_info = ""
         total = sum(countries.values())
+        country_count = []
+        for k in countries:
+            country_count.append({"country":k,"count":countries[k]})
+            
+        summary_dict[lineage]["Country counts"] = country_count
         for k in countries.most_common(5):
             
             pcent = round((100*k[1])/total, 0)
