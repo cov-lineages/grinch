@@ -62,6 +62,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
     for lineage in description_dict:
         summary_dict[lineage] = {"Lineage":lineage,
                                 "Countries":collections.Counter(),
+                                "Country counts"collections.Counter(),:
                                 "Earliest date": "",
                                 "Number designated":0,
                                 "Number assigned":0,
@@ -126,6 +127,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
         summary_dict[lineage]["Travel history"] = travel_info
 
         countries = summary_dict[lineage]["Countries"]
+        summary_dict[lineage]["Country counts"] = countries
         country_info = ""
         total = sum(countries.values())
         for k in countries.most_common(5):
@@ -134,7 +136,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
             country_info += f"{k[0]} {pcent}%, "
         country_info = country_info.rstrip(", ")
         summary_dict[lineage]["Countries"] = country_info
-
+        
         summary_dict[lineage]["Earliest date"] = str(summary_dict[lineage]["Earliest date"])
 
         date_objects = []
