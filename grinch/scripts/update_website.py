@@ -62,7 +62,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
     for lineage in description_dict:
         summary_dict[lineage] = {"Lineage":lineage,
                                 "Countries":collections.Counter(),
-                                "Country counts":[],:
+                                "Country counts":[],
                                 "Earliest date": "",
                                 "Number designated":0,
                                 "Number assigned":0,
