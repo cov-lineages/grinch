@@ -53,7 +53,7 @@ def get_conversion_dict():
 
 def make_summary_info(metadata, notes, designations, json_outfile):
     # add lineages and sub lineages into a dict with verity's summary information about each lineage
-    
+    not_found = []
     description_dict = get_description_dict(notes)
 
     summary_dict = collections.defaultdict(dict)
@@ -62,14 +62,14 @@ def make_summary_info(metadata, notes, designations, json_outfile):
     for lineage in description_dict:
         summary_dict[lineage] = {"Lineage":lineage,
                                 "Countries":collections.Counter(),
-                                "Country counts":[],
+                                "Country counts":collections.defaultdict(dict),
                                 "Earliest date": "",
                                 "Number designated":0,
                                 "Number assigned":0,
                                 "Date":collections.Counter(),
                                 "Travel history":collections.Counter(),
                                 "Description":description_dict[lineage]}
-
+    
     with open(designations,"r") as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -77,7 +77,8 @@ def make_summary_info(metadata, notes, designations, json_outfile):
             if lineage in summary_dict:
                 summary_dict[lineage]["Number designated"]+=1
             else:
-                print("Lineage not found", lineage)
+                not_found.append(lineage)
+    
 
     # compile data for json
     conversion_dict = get_conversion_dict()
@@ -100,7 +101,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                         country = conversion_dict[country]
                     
                     summary_dict[lineage]["Countries"][country]+=1
-
+                    
                     if summary_dict[lineage]["Earliest date"]:
                     
                         if d < summary_dict[lineage]["Earliest date"]:
@@ -109,6 +110,11 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                         summary_dict[lineage]["Earliest date"] = d
                     
                     summary_dict[lineage]["Date"][str(d)] +=1
+                    if country not in summary_dict[lineage]["Country counts"]:
+                        summary_dict[lineage]["Country counts"][country] = collections.Counter()
+                        summary_dict[lineage]["Country counts"][country][str(d)]+=1
+                    else:
+                        summary_dict[lineage]["Country counts"][country][str(d)]+=1
 
                     summary_dict[lineage]["Number assigned"] +=1 
 
@@ -116,9 +122,8 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                         summary_dict[lineage]["Travel history"][travel_history]+=1
             except:
                 pass
-
     for lineage in summary_dict:
-
+        
         travel = summary_dict[lineage]["Travel history"]
         travel_info = ""
         for k in travel:
@@ -130,11 +135,17 @@ def make_summary_info(metadata, notes, designations, json_outfile):
         
         country_info = ""
         total = sum(countries.values())
-        country_count = []
-        for k in countries:
-            country_count.append({"country":k,"count":countries[k]})
+        country_count_list = []
+        for country in summary_dict[lineage]["Country counts"]:
+            date_counts = summary_dict[lineage]["Country counts"][country]
+            country_count = {"country": country,
+                             "counts":[]}
+            for day in sorted(date_counts):
+                country_count["counts"].append({"date":day,"count":date_counts[day]})
+            country_count_list.append(country_count)
 
-        summary_dict[lineage]["Country counts"] = country_count
+        summary_dict[lineage]["Country counts"] = country_count_list
+
         for k in countries.most_common(5):
             
             pcent = round((100*k[1])/total, 0)
@@ -152,7 +163,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
 
     with open(json_outfile, 'w', encoding='utf-8') as jsonf: 
         jsonf.write(json.dumps(summary_dict, indent=4)) 
-
+    print("Lineages not found", list(set(not_found)))
     return summary_dict
 
 def get_parent(lineage):
