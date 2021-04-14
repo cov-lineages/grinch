@@ -41,11 +41,13 @@ with open(outputfile, 'r') as f:
 
 			if name not in nameToLineage:
 				nameToLineage[name] = Lineage(name)
-
-			nameToLineage[name].precisions.append(float(split[1]))
-			nameToLineage[name].recalls.append(float(split[2]))
-			nameToLineage[name].f1s.append(float(split[3]))
-			nameToLineage[name].supports.append(int(split[4]))
+			try:
+				nameToLineage[name].precisions.append(float(split[1]))
+				nameToLineage[name].recalls.append(float(split[2]))
+				nameToLineage[name].f1s.append(float(split[3]))
+				nameToLineage[name].supports.append(int(split[4]))
+			except:
+				pass
 
 print("lineage,precision,recall,f1_score,support")
 
