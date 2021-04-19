@@ -99,31 +99,33 @@ def make_summary_data(metadata,import_data,raw_data,lineages_of_concern):
                 cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
                 travel_history = row["travel_history"]
                 lineage = row["lineage"]
+                if d < cut_off: 
+                    pass
+                else:
+                    if lineage != "" and lineage in lineages_of_concern:
 
-                if lineage != "" and lineage in lineages_of_concern:
-
-                    if country == "Caribbean":
-                        country = row["sequence_name"].split("/")[0]
-                    
-                    if country in conversion_dict:
-                        country = conversion_dict[country]
-                    country = country.replace("_"," ")
-                    
-                    summary_dict[lineage]["Countries"][country]+=1
-                    
-                    if summary_dict[lineage]["Earliest date"]:
-                    
-                        if d < summary_dict[lineage]["Earliest date"]:
+                        if country == "Caribbean":
+                            country = row["sequence_name"].split("/")[0]
+                        
+                        if country in conversion_dict:
+                            country = conversion_dict[country]
+                        country = country.replace("_"," ")
+                        
+                        summary_dict[lineage]["Countries"][country]+=1
+                        
+                        if summary_dict[lineage]["Earliest date"]:
+                        
+                            if d < summary_dict[lineage]["Earliest date"]:
+                                summary_dict[lineage]["Earliest date"] = d
+                        else:
                             summary_dict[lineage]["Earliest date"] = d
-                    else:
-                        summary_dict[lineage]["Earliest date"] = d
-                    
-                    summary_dict[lineage]["Date"][str(d)] +=1
+                        
+                        summary_dict[lineage]["Date"][str(d)] +=1
 
-                    summary_dict[lineage]["Count"] +=1 
+                        summary_dict[lineage]["Count"] +=1 
 
-                    if travel_history:
-                        summary_dict[lineage]["Travel history"][travel_history]+=1
+                        if travel_history:
+                            summary_dict[lineage]["Travel history"][travel_history]+=1
 
     for lineage in summary_dict:
         fig_count = 0
