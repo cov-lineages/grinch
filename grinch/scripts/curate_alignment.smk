@@ -34,9 +34,9 @@ rule filter_alignment:
             for l in f:
                 l = l.rstrip("\n")
                 name,lineage = l.split(",")
-                if lineage not in config["lineages_of_concern"]:
-                    lineages[name]=lineage
-                    csv_len +=1
+                
+                lineages[name]=lineage
+                csv_len +=1
                 all_lineages[name]=lineage
                 all_len +=1
         with open(output.csv,"w") as fw:
@@ -73,7 +73,7 @@ rule filter_alignment:
                     seqs_len +=1
         
         print("Number of sequences in gisaid designated", all_len)
-        print("Number of sequences going into pangolearn training (minus lineages of concern)",csv_len)
+        print("Number of sequences going into pangolearn training",csv_len)
         print("Number of sequences found on gisaid", seqs_len)
         
 
