@@ -3,6 +3,7 @@ from Bio import SeqIO
 import os
 import collections
 
+
 config["trim_start"] = 265
 config["trim_end"] = 29674
 config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1","P.2"]
@@ -13,7 +14,21 @@ rule all:
     input:
         os.path.join(config["outdir"],"alignment.filtered.fasta"),
         os.path.join(config["outdir"],"decision_tree_rules.txt"),
-        os.path.join(config["outdir"],"lineage_recall_report.txt")
+        os.path.join(config["outdir"],"pangolearn.init.py")
+        # os.path.join(config["outdir"],"lineage_recall_report.txt")
+
+rule make_init:
+    output:
+        init = os.path.join(config["outdir"],"pangolearn.init.py")
+    run:
+        pangolearn_new_v = config["pangolearn_version"]
+        pango_version = config["pango_version"]
+        with open(output.init,"w") as fw:
+            fw.write(f'''_program = "pangoLEARN"
+__version__ = "{pangolearn_new_v}"
+PANGO_VERSION="{pango_version}"
+''')
+
 
 rule filter_alignment:
     input:
