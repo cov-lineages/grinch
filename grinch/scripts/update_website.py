@@ -198,7 +198,8 @@ def get_parent(lineage):
         'AN': 'B.1.1.200',
         'AP': 'B.1.1.70',
         'AQ': 'B.1.1.39',
-        'AS': 'B.1.1.317'}
+        'AS': 'B.1.1.317',
+        "AT": "B.1.1.370"}
     default_mapping = {"B":"A"}
     lin_list = lineage.split(".")
     
@@ -262,7 +263,8 @@ def get_child_dict(lineages):
             'AN': 'B.1.1.200',
             'AP': 'B.1.1.70',
             'AQ': 'B.1.1.39',
-            'AS': 'B.1.1.317'}
+            'AS': 'B.1.1.317',
+            "AT": "B.1.1.370"}
             
     for lineage in lineages:
         lineage = lineage.lstrip("*")
