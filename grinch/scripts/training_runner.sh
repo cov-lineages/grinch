@@ -14,7 +14,7 @@ LATEST_DATA=$(ls -td /raid/shared/2021* | head -n 1)
 cd /raid/shared/pango-designation && git pull #gets any updates to the reports in the data directory
 PANGO_V=$(git describe --tags --abbrev=0)
 
-cd /raid/shared/grinch && git pull #gets any updates to the reports in the data directory
+cd /raid/shared/pangolearn_training && git pull #gets any updates to the reports in the data directory
 
 snakemake --snakefile /raid/shared/grinch/grinch/scripts/curate_alignment.smk --configfile config.yaml --cores 1 --config outdir=$OUTDIR datadir=$LATEST_DATA pangolearn_version=$TODAY pango_version=$PANGO_V
 
