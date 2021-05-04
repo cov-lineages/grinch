@@ -18,16 +18,16 @@ echo "pango version $PANGO_V"
 
 cd /raid/shared/pangolearn_training #gets any updates to the reports in the data directory
 
-snakemake --snakefile /raid/shared/grinch/grinch/scripts/curate_alignment.smk --configfile config.yaml --cores 1 --config outdir=$OUTDIR datadir=$LATEST_DATA pangolearn_version=$TODAY pango_version=$PANGO_V
+snakemake --snakefile /raid/shared/grinch/grinch/scripts/curate_alignment.smk --nolock --configfile config.yaml --cores 1 --config outdir=$OUTDIR datadir=$LATEST_DATA pangolearn_version=$TODAY pango_version=$PANGO_V
 
-cp /raid/shared/pangolearn_training/$OUTDIR/pangolearn.init.py /raid/shared/pangoLEARN/pangoLEARN/__init__.py
-cp /raid/shared/pangolearn_training/$OUTDIR/decision* /raid/shared/pangoLEARN/pangoLEARN/data/
-cp /raid/shared/pangolearn_training/$OUTDIR/metadata.downsample.csv /raid/shared/pangoLEARN/pangoLEARN/data/lineages.downsample.csv
-cp /raid/shared/pangolearn_training/$OUTDIR/lineages.metadata.csv /raid/shared/pango-designation/lineages.metadata.csv
-cp /raid/shared/pangolearn_training/$OUTDIR/lineages.metadata.csv /raid/shared/pangoLEARN/pangoLEARN/data/lineages.metadata.csv
+cp /raid/shared/pangolearn_training/$OUTDIR/pangolearn.init.py /home/shared/pangoLEARN/pangoLEARN/__init__.py
+cp /raid/shared/pangolearn_training/$OUTDIR/decision* /home/shared/pangoLEARN/pangoLEARN/data/
+cp /raid/shared/pangolearn_training/$OUTDIR/metadata.downsample.csv /home/shared/pangoLEARN/pangoLEARN/data/lineages.downsample.csv
+cp /raid/shared/pangolearn_training/$OUTDIR/lineages.metadata.csv /home/shared/pango-designation/lineages.metadata.csv
+cp /raid/shared/pangolearn_training/$OUTDIR/lineages.metadata.csv /home/shared/pangoLEARN/pangoLEARN/data/lineages.metadata.csv
 
-git add /raid/shared/pangoLEARN/pangoLEARN/__init__.py
-git add /raid/shared/pangoLEARN/pangoLEARN/data/decision*
-git add /raid/shared/pangoLEARN/pangoLEARN/data/lineages*
+git add /home/shared/pangoLEARN/pangoLEARN/__init__.py
+git add /home/shared/pangoLEARN/pangoLEARN/data/decision*
+git add /home/shared/pangoLEARN/pangoLEARN/data/lineages*
 
 
