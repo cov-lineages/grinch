@@ -12,7 +12,7 @@ echo "Training model version: $TODAY"
 LATEST_DATA=$(ls -td /raid/shared/2021* | head -n 1)
 
 cd /raid/shared/pango-designation && git pull #gets any updates to the reports in the data directory
-PANGO_V=$(git describe --tags --abbrev=0)
+PANGO_V=$(git tag --sort=committerdate | tail -1)
 
 echo "pango version $PANGO_V"
 
