@@ -26,16 +26,18 @@ rule gather_lineages:
     run:
         
         with open(output.csv,"w") as fw:
-            fw.write("sequence_name,lineage,probability,pangoLEARN_version,status,note\n")
+            fw.write("sequence_name,lineage,conflict,pangolin_version,pangoLEARN_version,pango_version,status,note\n")
             for i in input:
                 with open(i,"r") as f:
                     reader = csv.DictReader(f)
                     for row in reader:
                         tax = row["taxon"]
                         lineage = row["lineage"]
-                        probability = row["probability"]
+                        probability = row["conflict"]
+                        pangolin_version = row["pangolin_version"]
+                        pango_version = row["pango_version"]
                         pangoLEARN_version = row["pangoLEARN_version"]
                         status = row["status"]
                         note = row["note"]
-                        fw.write(f"{tax},{lineage},{probability},{pangoLEARN_version},{status},{note}\n")
+                        fw.write(f"{tax},{lineage},{probability},{pangolin_version},{pangoLEARN_version},{pango_version},{status},{note}\n")
 
