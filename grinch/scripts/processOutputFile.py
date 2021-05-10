@@ -36,7 +36,7 @@ with open(outputfile, 'r') as f:
 			nameToLineage[name].f1s.append(float(split[4]))
 			nameToLineage[name].supports.append(int(split[5]))
 
-		if len(split) == 5 and ":" not in line:
+		if len(split) == 5 and ":" not in line and "files read in" not in line:
 			name = split[0]
 
 			if name not in nameToLineage:
