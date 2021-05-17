@@ -162,11 +162,6 @@ rule parse_variants_input:
             for i in range(len(variant_dict)):
                 out_handle.write("%s\n" %variant_dict[i])
 
-rule get_constellations:
-    input:
-        config["variants_csv"]
-    output:
-        
 
 rule type_variants:
     input:
