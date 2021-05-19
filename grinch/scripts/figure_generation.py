@@ -738,8 +738,8 @@ def plot_figures(world_map_file, figdir, metadata, continent_file, flight_data_p
         if relevant_table:
             info_dict = make_transmission_map(figdir, world_map, lineage, relevant_table)
 
-        if flight_data:
-            flight_data_plot(figdir, flight_data,locations_to_dates,lineage, threshold, info_dict, central_loc)
+            if flight_data:
+                flight_data_plot(figdir, flight_data,locations_to_dates,lineage, threshold, info_dict, central_loc)
 
         
         plot_date_map(figdir, with_info, lineage, number_to_date)
