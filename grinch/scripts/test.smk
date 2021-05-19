@@ -3,7 +3,7 @@ import grinchfunks as gfunk
 
 
 output_prefix = config["output_prefix"]
-config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1"]
+config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1","B.1.617.2","A.23.1","B.1.525"]
 
 rule render_report:
     input:

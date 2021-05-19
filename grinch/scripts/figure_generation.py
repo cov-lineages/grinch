@@ -707,6 +707,7 @@ def plot_figures(world_map_file, figdir, metadata, continent_file, flight_data_p
 
     lineages_of_interest = []
     for lineage in read_info:
+        print(lineage)
         lineages_of_interest.append(lineage)
         lin_data = read_info[lineage]
         lineage_summary[lineage] = {
@@ -717,8 +718,8 @@ def plot_figures(world_map_file, figdir, metadata, continent_file, flight_data_p
         }
         if lin_data["threshold"] != "NA":
             lineage_summary[lineage]["flight_data"] = os.path.join(flight_data_path, f"{lineage}.csv")
-        if lin_data["import_data"] == "Y":
-            lineage_summary[lineage]["import_data"] = pkg_resources.resource_filename('grinch', f'data/local_imported_{lineage}.csv')
+        # if lin_data["import_data"] == "Y":
+        #     lineage_summary[lineage]["import_data"] = pkg_resources.resource_filename('grinch', f'data/local_imported_{lineage}.csv')
 
     world_map, countries = prep_map(world_map_file)
     country_to_continent = get_continent_mapping(continent_file)
