@@ -26,7 +26,7 @@ rule make_init:
         with open(output.init,"w") as fw:
             fw.write(f'''_program = "pangoLEARN"
 __version__ = "{pangolearn_new_v}"
-PANGO_VERSION="{pango_version}"
+PANGO_VERSION = "{pango_version}"
 ''')
 
 
