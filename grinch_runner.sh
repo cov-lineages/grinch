@@ -24,8 +24,7 @@ cp /raid/shared/$TODAY/report/grinch_data.json /raid/shared/lineages-website/_da
 cp /raid/shared/$TODAY/figures/*.svg /raid/shared/lineages-website/assets/images/
 
 #cp /raid/shared/$TODAY/2/lineages.metadata.csv /home/shared/lineages-website/_data/lineages.metadata.csv
-
-cd /home/shared/lineages-website && git pull
+cd /raid/shared/lineages-website && git pull
 
 git add /raid/shared/lineages-website/lineages.md
 git add /raid/shared/lineages-website/lineages/*.md
