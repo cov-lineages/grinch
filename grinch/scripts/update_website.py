@@ -166,40 +166,8 @@ def make_summary_info(metadata, notes, designations, json_outfile):
     print("Lineages not found", list(set(not_found)))
     return summary_dict
 
-def get_parent(lineage):
-    alias = {
-        'C': 'B.1.1.1',
-        'D': 'B.1.1.25',
-        'G': 'B.1.258.2',
-        'K': 'B.1.1.277',
-        'L': 'B.1.1.10',
-        'M': 'B.1.1.294',
-        'N': 'B.1.1.33',
-        'P': 'B.1.1.28',
-        'R': 'B.1.1.316',
-        'S': 'B.1.1.217',
-        'U': 'B.1.177.60',
-        'V': 'B.1.177.54',
-        'W': 'B.1.177.53',
-        'Y': 'B.1.177.52',
-        'Z': 'B.1.177.50',
-        'AA': 'B.1.177.15',
-        'AB': 'B.1.160.16',
-        'AC': 'B.1.1.405',
-        'AD': 'B.1.1.315',
-        'AE': 'B.1.1.306',
-        'AF': 'B.1.1.305',
-        'AG': 'B.1.1.297',
-        'AH': 'B.1.1.241',
-        'AJ': 'B.1.1.240',
-        'AK': 'B.1.1.232',
-        'AL': 'B.1.1.231',
-        'AM': 'B.1.1.216',
-        'AN': 'B.1.1.200',
-        'AP': 'B.1.1.70',
-        'AQ': 'B.1.1.39',
-        'AS': 'B.1.1.317',
-        "AT": "B.1.1.370"}
+def get_parent(lineage,alias):
+
     default_mapping = {"B":"A"}
     lin_list = lineage.split(".")
     
@@ -231,40 +199,8 @@ def sort_lineages(lin_list):
     finished_list = ['.'.join(i) for i in stringed]
     return finished_list
 
-def get_child_dict(lineages):
+def get_child_dict(lineages,alias):
     child_dict = collections.defaultdict(list)
-    alias = {'C': 'B.1.1.1',
-            'D': 'B.1.1.25',
-            'G': 'B.1.258.2',
-            'K': 'B.1.1.277',
-            'L': 'B.1.1.10',
-            'M': 'B.1.1.294',
-            'N': 'B.1.1.33',
-            'P': 'B.1.1.28',
-            'R': 'B.1.1.316',
-            'S': 'B.1.1.217',
-            'U': 'B.1.177.60',
-            'V': 'B.1.177.54',
-            'W': 'B.1.177.53',
-            'Y': 'B.1.177.52',
-            'Z': 'B.1.177.50',
-            'AA': 'B.1.177.15',
-            'AB': 'B.1.160.16',
-            'AC': 'B.1.1.405',
-            'AD': 'B.1.1.315',
-            'AE': 'B.1.1.306',
-            'AF': 'B.1.1.305',
-            'AG': 'B.1.1.297',
-            'AH': 'B.1.1.241',
-            'AJ': 'B.1.1.240',
-            'AK': 'B.1.1.232',
-            'AL': 'B.1.1.231',
-            'AM': 'B.1.1.216',
-            'AN': 'B.1.1.200',
-            'AP': 'B.1.1.70',
-            'AQ': 'B.1.1.39',
-            'AS': 'B.1.1.317',
-            "AT": "B.1.1.370"}
             
     for lineage in lineages:
         lineage = lineage.lstrip("*")
@@ -297,7 +233,7 @@ def update_pages():
     lineage_path = os.path.join(website_dir, "lineages")
 
     lineages = make_summary_info(args.metadata, args.lineage_notes, args.designations, args.json_outfile)
-    
+    alias = 
     child_dict = get_child_dict(lineages)
     with open(f"{website_dir}/lineages.md","w") as fall:
         lineage_all = [i for i in lineages.keys() if not i.startswith("*")]
@@ -307,14 +243,30 @@ def update_pages():
         for i in sorted_old:
             sorted_all.append(i)
         fall.write(f"---\nlayout: go_to_page\ntitle: 'Go to lineage:'\nchildren: {sorted_all}\n---\n")
+    c=0
     for lineage in lineages:
         if not lineage.startswith("*"):
-            if lineage =="A":
-                with open(f"{lineage_path}/lineage_{lineage}.md","w") as fw:
-                    fw.write(f"""---\nlayout: lineage_page\ntitle: Lineage {lineage}\nlineage: {lineage}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
+            c +=1
+            if c<500:
+                lineage_dir = os.path.join(lineage_path, "lineages1")
+            elif c<1000:
+                lineage_dir = os.path.join(lineage_path, "lineages2")
+            elif c<1500:
+                lineage_dir = os.path.join(lineage_path, "lineages3")
+            elif c<2000:
+                lineage_dir = os.path.join(lineage_path, "lineages4")
+            elif c<2500:
+                lineage_dir = os.path.join(lineage_path, "lineages5")
             else:
-                with open(f"{lineage_path}/lineage_{lineage}.md","w") as fw:
-                    fw.write(f"""---\nlayout: lineage_page\ntitle: Lineage {lineage}\nlineage: {lineage}\nparent: {get_parent(lineage)}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
+                lineage_dir = os.path.join(lineage_path, "lineages6")
+            if not os.path.exists(lineage_dir):
+                os.mkdir(lineage_dir)
+            if lineage =="A":
+                with open(f"{lineage_dir}/lineage_{lineage}.md","w") as fw:
+                    fw.write(f"""---\npermalink: /lineages/lineage_{lineage}.html\nlayout: lineage_page\ntitle: Lineage {lineage}\nlineage: {lineage}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
+            else:
+                with open(f"{lineage_dir}/lineage_{lineage}.md","w") as fw:
+                    fw.write(f"""---\npermalink: /lineages/lineage_{lineage}.html\nlayout: lineage_page\ntitle: Lineage {lineage}\nlineage: {lineage}\nparent: {get_parent(lineage)}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
 
 
 
