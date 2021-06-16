@@ -25,7 +25,7 @@ import grinch.utils.custom_logger as custom_logger
 from grinch.utils import grinchfunks as gfunk
 
 thisdir = os.path.abspath(os.path.dirname(__file__))
-cwd = os.getcwd()
+
 
 def main(sysargs = sys.argv[1:]):
 
@@ -34,11 +34,12 @@ def main(sysargs = sys.argv[1:]):
 
     io_group = parser.add_argument_group('input output options')
     io_group.add_argument('-i',"--config", action="store",help="Input config file", dest="config")
+    io_group.add_argument('-j',"--json", action="store",help="GISAID JSON data",dest="json")
     io_group.add_argument('--outdir', action="store",help="Output directory. Default: current working directory")
     io_group.add_argument('-o','--output-prefix', action="store",help="Output prefix. Default: grinch",dest="output_prefix")
 
     a_group = parser.add_argument_group('Analysis options')
-    a_group.add_argument('-a',"--analysis", action="store",help="Analysis entry point.", dest="config")
+    a_group.add_argument('-a',"--analysis",dest="analysis", action="store",help="Analysis entry point.")
 
     misc_group = parser.add_argument_group('misc options')
     misc_group.add_argument('--tempdir',action="store",help="Specify where you want the temporary stuff to go Default: $TMPDIR")
@@ -83,11 +84,13 @@ def main(sysargs = sys.argv[1:]):
     
     config["analysis"] = gfunk.add_arg_to_config("analysis",args.analysis,config)
 
+    
+
     """
     Output directory 
     """
     # default output dir
-    gfunk.get_outdir(args.outdir,args.output_prefix,cwd,config)
+    gfunk.add_arg_to_config("outdir",args.outdir,config)
     figdir  = os.path.join(config["outdir"], "figures")
     if not os.path.exists(figdir):
         os.mkdir(figdir)
@@ -98,8 +101,8 @@ def main(sysargs = sys.argv[1:]):
     """
     
     # specifying temp directory, outdir if no_temp (tempdir becomes working dir)
-    tempdir = gfunk.get_temp_dir(args.tempdir, args.no_temp,cwd,config)
-    config["tempdir"] = tempdir
+    # tempdir = gfunk.get_temp_dir(args.tempdir, args.no_temp,cwd,config)
+    # config["tempdir"] = tempdir
     """
     Parsing the report_group arguments, 
     config options
@@ -121,13 +124,8 @@ def main(sysargs = sys.argv[1:]):
 
     """
     # don't run in quiet mode if verbose specified
-    if args.verbose:
-        quiet_mode = False
-        config["log_string"] = ""
-    else:
-        quiet_mode = True
-        lh_path = os.path.realpath(lh.__file__)
-        config["log_string"] = f"--quiet --log-handler-script {lh_path} "
+    gfunk.add_arg_to_config("verbose",args.verbose,config)
+    gfunk.set_up_verbosity(config)
 
     if args.no_force:
         force_option = False
