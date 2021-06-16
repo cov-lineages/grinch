@@ -14,7 +14,7 @@ grinch -t 10 -i /raid/shared/grinch/grinch/data/config.yaml --outdir "/raid/shar
 
 cd /raid/shared/lineages-website && git pull
 
-python /raid/shared/grinch/grinch/scripts/update_website.py --website-dir /raid/shared/lineages-website -m /raid/shared/$TODAY/2/lineages.metadata.csv -d /raid/shared/pango-designation/lineages.csv -n /raid/shared/pango-designation/lineage_notes.txt -o /raid/shared/lineages-website/_data/lineage_data.json -a /raid/shared/pango-designation/pango-designation/alias.json
+python /raid/shared/grinch/grinch/scripts/update_website.py --website-dir /raid/shared/lineages-website -m /raid/shared/$TODAY/2/lineages.metadata.csv -d /raid/shared/pango-designation/lineages.csv -n /raid/shared/pango-designation/lineage_notes.txt -o /raid/shared/lineages-website/_data/lineage_data.json -a /raid/shared/pango-designation/pango-designation/alias_key.json
 
 cp /raid/shared/$TODAY/report/global_report_B.1.1.7.md /raid/shared/lineages-website/global_report_B.1.1.7.md
 cp /raid/shared/$TODAY/report/global_report_B.1.351.md /raid/shared/lineages-website/global_report_B.1.351.md
