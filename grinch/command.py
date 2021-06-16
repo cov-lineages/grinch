@@ -22,7 +22,7 @@ from grinch.utils import dependency_checks
 from grinch.utils import data_install_checks
 
 import grinch.utils.custom_logger as custom_logger
-from utils import grinchfunks as gfunk
+from grinch.utils import grinchfunks as gfunk
 
 thisdir = os.path.abspath(os.path.dirname(__file__))
 cwd = os.getcwd()
