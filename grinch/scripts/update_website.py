@@ -20,9 +20,14 @@ def parse_args():
 
 def get_alias(alias_file):
     alias_dict = {}
+    parsed_aliases= {}
     with open(alias_file, "r") as read_file:
         alias_dict = json.load(read_file)
-    return alias_dict
+    for i in alias_dict:
+        if type(alias_dict[i]) != list and alias_dict[i]!="":
+            parsed_aliases[i] = alias_dict[i]
+    return parsed_aliases
+
 def get_description_dict(description_file):
     lineages = {}
     with open(description_file,"r") as f:
