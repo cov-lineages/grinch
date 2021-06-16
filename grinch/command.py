@@ -91,6 +91,8 @@ def main(sysargs = sys.argv[1:]):
     """
     # default output dir
     gfunk.add_arg_to_config("outdir",args.outdir,config)
+    if not os.path.exists(config["outdir"]):
+        os.mkdir(config["outdir"])
     figdir  = os.path.join(config["outdir"], "figures")
     if not os.path.exists(figdir):
         os.mkdir(figdir)
