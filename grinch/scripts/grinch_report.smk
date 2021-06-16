@@ -1,7 +1,8 @@
 import pandas as pd
 from Bio import SeqIO
-from grinch.figure_generation import figure_generation as fig_gen
 from grinch.utils import grinchfunks as gfunk
+from grinch.figure_generation import figurefunks as fig_gen
+
 import csv
 
 output_prefix = config["output_prefix"]
