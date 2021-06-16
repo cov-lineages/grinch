@@ -233,7 +233,6 @@ def update_pages():
     lineage_path = os.path.join(website_dir, "lineages")
 
     lineages = make_summary_info(args.metadata, args.lineage_notes, args.designations, args.json_outfile)
-    alias = 
     child_dict = get_child_dict(lineages)
     with open(f"{website_dir}/lineages.md","w") as fall:
         lineage_all = [i for i in lineages.keys() if not i.startswith("*")]
