@@ -10,7 +10,7 @@ cd /raid/shared/grinch && git pull #gets any updates to the reports in the data 
 
 python setup.py install
 
-grinch -t 2 -i /raid/shared/grinch/grinch/data/config.yaml --outdir "/raid/shared/$TODAY" --output-prefix global_report
+grinch -t 10 -i /raid/shared/grinch/grinch/data/config.yaml --outdir "/raid/shared/$TODAY" --output-prefix global_report
 
 cd /raid/shared/lineages-website && git pull
 
@@ -23,8 +23,7 @@ cp /raid/shared/$TODAY/report/grinch_data.json /raid/shared/lineages-website/_da
 
 cp /raid/shared/$TODAY/figures/*.svg /raid/shared/lineages-website/assets/images/
 
-cp /raid/shared/$TODAY/2/lineages.metadata.csv /raid/shared/lineages-website/_data/lineages.metadata.csv
-
+#cp /raid/shared/$TODAY/2/lineages.metadata.csv /home/shared/lineages-website/_data/lineages.metadata.csv
 cd /raid/shared/lineages-website && git pull
 
 git add /raid/shared/lineages-website/lineages.md
