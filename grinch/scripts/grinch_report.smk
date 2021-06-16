@@ -1,7 +1,7 @@
 import pandas as pd
 from Bio import SeqIO
-import figure_generation as fig_gen
-import grinchfunks as gfunk
+from grinch.figure_generation import figure_generation as fig_gen
+from grinch.utils import grinchfunks as gfunk
 import csv
 
 output_prefix = config["output_prefix"]
@@ -111,8 +111,10 @@ rule make_chunks:
         fasta = rules.align_to_reference.output.fasta
     output:
         txt = config["outdir"] + "/1/placeholder.txt"
-    shell:
-        "make_chunks.py {input.fasta} {config[outdir]}/1/ && touch {output.txt}"
+    run:
+        outdir = f"{config['outdir']}/1/"
+        gfunk.make_chunks(input.fasta, outdir)
+        shell("touch {output.txt}")
 
 rule parallel_pangolin:
     input:
@@ -137,75 +139,11 @@ rule parallel_pangolin:
                             f"file_stems={file_stems} "
                             "--cores {workflow.cores}")
 
-rule parse_variants_input:
-    input:
-        config["variants_csv"]
-    output:
-        temp(config["outdir"] + "/2/search_variants.csv")
-    run:
-        def record_to_variant(record):
-            if record["type"] == 'deletion':
-                return "del:%s:%s" %(record["nuc_location"],record["variants"])
-            elif record["type"] == 'replacement':
-                return "aa:%s" %record["id"]
-            return None
-
-        variant_dict = {}
-        with open(input[0], 'r') as in_handle:
-            reader = csv.DictReader(in_handle)
-            for r in reader:
-                variant = record_to_variant(r)
-                order = int(r["barcode_pos"])
-                variant_dict[order] = variant
-
-        with open(output[0], 'w') as out_handle:
-            for i in range(len(variant_dict)):
-                out_handle.write("%s\n" %variant_dict[i])
-
-
-rule type_variants:
-    input:
-        fasta = rules.align_to_reference.output.fasta,
-        reference = config["reference"],
-        variants = rules.parse_variants_input.output
-    output:
-        temp(config["outdir"] + "/2/typed_variants.csv")
-    log:
-        config["outdir"] + "/logs/2_type_variants.log"
-    shell:
-        """
-        type_variants.py \
-            --fasta-in {input.fasta:q} \
-            --variants-config {input.variants:q} \
-            --reference {input.reference:q} \
-            --variants-out {output:q} \
-            --append-genotypes &> {log}
-        """
-
-rule generate_constellation_strings:
-    input:
-        variants = config["variants_csv"],
-        variant_calls = rules.type_variants.output
-    output:
-        config["outdir"] + "/2/constellation_report.csv"
-    log:
-        config["outdir"] + "/logs/2_generate_constellation_strings.log"
-    shell:
-        """
-        generate_constellation.py \
-            --variant-ref {input.variants:q} \
-            --variant-calls {input.variant_calls:q} \
-            --out-file {output[0]:q} &> {log}
-        """
-
-
 rule grab_metadata:
     input:
         metadata = rules.gisaid_remove_duplicates.output.metadata,
-        lineages = rules.parallel_pangolin.output.lineages,
-        constellations = rules.generate_constellation_strings.output
+        lineages = rules.parallel_pangolin.output.lineages
     output:
-        tmp_metadata = temp(config["outdir"] + "/2/lineages.metadata.tmp.csv"),
         metadata = config["outdir"] + "/2/lineages.metadata.csv"
     log:
         config["outdir"] + "/logs/2_grab_metadata.log"
@@ -218,15 +156,7 @@ rule grab_metadata:
           --join-on sequence_name \
           --new-columns covv_accession_id country sample_date epi_week travel_history \
           --where-column epi_week=edin_epi_week country=edin_admin_0 travel_history=edin_travel sample_date=covv_collection_date \
-          --out-metadata {output.tmp_metadata} &> {log}
-
-        fastafunk add_columns \
-          --in-metadata {output.tmp_metadata} \
-          --in-data {input.constellations} \
-          --index-column sequence_name \
-          --join-on sequence_name \
-          --new-columns constellation \
-          --out-metadata {output.metadata} &>> {log}
+          --out-metadata {output.metadata} &> {log}
         """
 
 rule render_report:
