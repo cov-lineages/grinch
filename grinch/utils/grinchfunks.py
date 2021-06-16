@@ -70,6 +70,7 @@ def get_defaults():
                     "summary_fields":"node_number,most_recent_tip,tip_count,admin0_count,admin1_count",
                     "cluster_fields":"node_number,day_range,tip_count,uk_tip_count,uk_chain_count,identical_count",
                     "no_temp":False,
+                    "threads":5,
                     "outdir":os.getcwd(),
                     "force":True
                     }
@@ -82,38 +83,38 @@ def get_snakefile(thisdir):
         sys.exit(-1)
     return snakefile
 
-# def get_temp_dir(tempdir_arg,no_temp_arg, cwd,config):
-#     tempdir = ''
-#     outdir = config["outdir"]
-#     if no_temp_arg:
-#         print(green(f"--no-temp:") + f" All intermediate files will be written to {outdir}")
-#         tempdir = outdir
-#         config["no_temp"] = no_temp_arg
-#     elif config["no_temp"]:
-#         print(green(f"--no-temp:") + f" All intermediate files will be written to {outdir}")
-#         tempdir = outdir
-#     elif tempdir_arg:
-#         expanded_path = os.path.expanduser(tempdir_arg)
-#         to_be_dir = os.path.join(cwd,expanded_path)
-#         if not os.path.exists(to_be_dir):
-#             os.mkdir(to_be_dir)
-#         temporary_directory = tempfile.TemporaryDirectory(suffix=None, prefix=None, dir=to_be_dir)
-#         tempdir = temporary_directory.name
+def get_temp_dir(tempdir_arg,no_temp_arg, cwd,config):
+    tempdir = ''
+    outdir = config["outdir"]
+    if no_temp_arg:
+        print(green(f"--no-temp:") + f" All intermediate files will be written to {outdir}")
+        tempdir = outdir
+        config["no_temp"] = no_temp_arg
+    elif config["no_temp"]:
+        print(green(f"--no-temp:") + f" All intermediate files will be written to {outdir}")
+        tempdir = outdir
+    elif tempdir_arg:
+        expanded_path = os.path.expanduser(tempdir_arg)
+        to_be_dir = os.path.join(cwd,expanded_path)
+        if not os.path.exists(to_be_dir):
+            os.mkdir(to_be_dir)
+        temporary_directory = tempfile.TemporaryDirectory(suffix=None, prefix=None, dir=to_be_dir)
+        tempdir = temporary_directory.name
 
-#     elif "tempdir" in config:
-#         expanded_path = os.path.expanduser(config["tempdir"])
-#         to_be_dir = os.path.join(cwd,expanded_path)
-#         if not os.path.exists(to_be_dir):
-#             os.mkdir(to_be_dir)
-#         temporary_directory = tempfile.TemporaryDirectory(suffix=None, prefix=None, dir=to_be_dir)
-#         tempdir = temporary_directory.name
+    elif "tempdir" in config:
+        expanded_path = os.path.expanduser(config["tempdir"])
+        to_be_dir = os.path.join(cwd,expanded_path)
+        if not os.path.exists(to_be_dir):
+            os.mkdir(to_be_dir)
+        temporary_directory = tempfile.TemporaryDirectory(suffix=None, prefix=None, dir=to_be_dir)
+        tempdir = temporary_directory.name
 
-#     else:
-#         temporary_directory = tempfile.TemporaryDirectory(suffix=None, prefix=None, dir=None)
-#         tempdir = temporary_directory.name
+    else:
+        temporary_directory = tempfile.TemporaryDirectory(suffix=None, prefix=None, dir=None)
+        tempdir = temporary_directory.name
     
-#     config["tempdir"] = tempdir 
-#     return tempdir
+    config["tempdir"] = tempdir 
+    return tempdir
     
 def parse_yaml_file(configfile,config):
     with open(configfile,"r") as f:

@@ -101,8 +101,8 @@ def main(sysargs = sys.argv[1:]):
     """
     
     # specifying temp directory, outdir if no_temp (tempdir becomes working dir)
-    # tempdir = gfunk.get_temp_dir(args.tempdir, args.no_temp,cwd,config)
-    # config["tempdir"] = tempdir
+    tempdir = gfunk.get_temp_dir(args.tempdir, args.no_temp,os.getcwd(),config)
+    config["tempdir"] = tempdir
     """
     Parsing the report_group arguments, 
     config options
@@ -144,7 +144,7 @@ def main(sysargs = sys.argv[1:]):
     threads = config["threads"]
 
     if args.json:
-        config["json"] = os.path.join(cwd,args.json)
+        config["json"] = os.path.join(os.getcwd(),args.json)
     else:
         fn = config["filename"]
         fn_unzipped = ".".join(fn.split(".")[:-1])
@@ -156,9 +156,9 @@ def main(sysargs = sys.argv[1:]):
                     f"--user {config['username']} {config['url']} "
                     "&& "
                     f"bzip2 -d {fn} ")
-        config["json"] = os.path.join(cwd,fn_unzipped)
+        config["json"] = os.path.join(os.getcwd(),fn_unzipped)
 
-    config["timestamp"] = gfunk.get_timestamp()
+    # config["timestamp"] = gfunk.get_timestamp()
     
     # find the master Snakefile
     snakefile = gfunk.get_snakefile(thisdir)
@@ -169,12 +169,12 @@ def main(sysargs = sys.argv[1:]):
             print(green(k), config[k])
 
         status = snakemake.snakemake(snakefile, printshellcmds=True, forceall=True, force_incomplete=True,
-                                        workdir=tempdir,config=config, cores=args.threads,lock=False
+                                        workdir=tempdir,config=config, cores=threads,lock=False
                                         )
     else:
         logger = custom_logger.Logger()
         status = snakemake.snakemake(snakefile, printshellcmds=False, forceall=True,force_incomplete=True,workdir=tempdir,
-                                    config=config, cores=args.threads,lock=False,quiet=True,log_handler=config["log_api"]
+                                    config=config, cores=threads,lock=False,quiet=True,log_handler=config["log_api"]
                                     )
 
     if status: # translate "success" into shell exit code of 0
