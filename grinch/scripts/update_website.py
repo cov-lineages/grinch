@@ -277,7 +277,7 @@ def update_pages():
                     fw.write(f"""---\npermalink: /lineages/lineage_{lineage}.html\nlayout: lineage_page\ntitle: Lineage {lineage}\nlineage: {lineage}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
             else:
                 with open(f"{lineage_dir}/lineage_{lineage}.md","w") as fw:
-                    fw.write(f"""---\npermalink: /lineages/lineage_{lineage}.html\nlayout: lineage_page\ntitle: Lineage {lineage}\nlineage: {lineage}\nparent: {get_parent(lineage)}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
+                    fw.write(f"""---\npermalink: /lineages/lineage_{lineage}.html\nlayout: lineage_page\ntitle: Lineage {lineage}\nlineage: {lineage}\nparent: {get_parent(lineage,alias)}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
 
 
 
