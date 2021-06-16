@@ -15,11 +15,14 @@ from datetime import date
 from Bio import SeqIO
 import pkg_resources
 from . import _program
+from grinch.utils.log_colours import green,cyan,red
 
-from reportfunk.funks import report_functions as rfunk
-from reportfunk.funks import custom_logger as custom_logger
-from reportfunk.funks import log_handler_handle as lh
-import grinchfunks as gfunk
+
+from grinch.utils import dependency_checks
+from grinch.utils import data_install_checks
+
+import grinch.utils.custom_logger as custom_logger
+from utils import grinchfunks as gfunk
 
 thisdir = os.path.abspath(os.path.dirname(__file__))
 cwd = os.getcwd()
@@ -31,9 +34,11 @@ def main(sysargs = sys.argv[1:]):
 
     io_group = parser.add_argument_group('input output options')
     io_group.add_argument('-i',"--config", action="store",help="Input config file", dest="config")
-    io_group.add_argument('-j',"--json", action="store",help="Input json file", dest="json")
     io_group.add_argument('--outdir', action="store",help="Output directory. Default: current working directory")
     io_group.add_argument('-o','--output-prefix', action="store",help="Output prefix. Default: grinch",dest="output_prefix")
+
+    a_group = parser.add_argument_group('Analysis options')
+    a_group.add_argument('-a',"--analysis", action="store",help="Analysis entry point.", dest="config")
 
     misc_group = parser.add_argument_group('misc options')
     misc_group.add_argument('--tempdir',action="store",help="Specify where you want the temporary stuff to go Default: $TMPDIR")
@@ -59,6 +64,11 @@ def main(sysargs = sys.argv[1:]):
     # get the default values from grinchfunks
     config = gfunk.get_defaults()
 
+    data_install_checks.check_install(config)
+    snakefile = data_install_checks.get_snakefile(thisdir)
+
+    dependency_checks.set_up_verbosity(config)
+
     """
     Valid inputs are config.yaml/config.yml
     
@@ -71,6 +81,8 @@ def main(sysargs = sys.argv[1:]):
     if config["config"]:
         gfunk.parse_yaml_file(config["config"], config)
     
+    config["analysis"] = gfunk.add_arg_to_config("analysis",args.analysis,config)
+
     """
     Output directory 
     """
@@ -93,7 +105,7 @@ def main(sysargs = sys.argv[1:]):
     config options
     """
 
-    lineages = ["B.1.1.7","B.1.351","P.1"]
+    lineages = ["B.1.1.7","B.1.351","P.1","B.1.617.2"]
     config["lineages_of_concern"] = lineages
     
     config["reference"] = pkg_resources.resource_filename('grinch', 'data/reference.fasta')
@@ -153,17 +165,18 @@ def main(sysargs = sys.argv[1:]):
     # find the master Snakefile
     snakefile = gfunk.get_snakefile(thisdir)
 
-    if args.verbose:
-        
+    if config['verbose']:
+        print(green("\n**** CONFIG ****"))
         for k in sorted(config):
-            print(gfunk.green(k), config[k])
-        status = snakemake.snakemake(snakefile, printshellcmds=True, forceall=force_option, force_incomplete=True,
-                                    workdir=tempdir,config=config, cores=threads,lock=False
-                                    )
+            print(green(k), config[k])
+
+        status = snakemake.snakemake(snakefile, printshellcmds=True, forceall=True, force_incomplete=True,
+                                        workdir=tempdir,config=config, cores=args.threads,lock=False
+                                        )
     else:
         logger = custom_logger.Logger()
-        status = snakemake.snakemake(snakefile, printshellcmds=False, forceall=force_option,force_incomplete=True,workdir=tempdir,
-                                    config=config, cores=threads,lock=False,quiet=True,log_handler=logger.log_handler
+        status = snakemake.snakemake(snakefile, printshellcmds=False, forceall=True,force_incomplete=True,workdir=tempdir,
+                                    config=config, cores=args.threads,lock=False,quiet=True,log_handler=config["log_api"]
                                     )
 
     if status: # translate "success" into shell exit code of 0
