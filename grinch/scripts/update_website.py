@@ -14,9 +14,15 @@ def parse_args():
     parser.add_argument('-m',"--metadata", action="store",type=str, dest="metadata")
     parser.add_argument('-n',"--lineage-notes", action="store",type=str, dest="lineage_notes")
     parser.add_argument("-d","--designations",action="store",dest="designations")
+    parser.add_argument("-a","--alias",action="store",dest="alias")
     parser.add_argument("-o","--outfile",action="store",type=str, dest="json_outfile")
     return parser.parse_args()
 
+def get_alias(alias_file):
+    alias_dict = {}
+    with open(alias_file, "r") as read_file:
+        alias_dict = json.load(read_file)
+    return alias_dict
 def get_description_dict(description_file):
     lineages = {}
     with open(description_file,"r") as f:
@@ -233,7 +239,8 @@ def update_pages():
     lineage_path = os.path.join(website_dir, "lineages")
 
     lineages = make_summary_info(args.metadata, args.lineage_notes, args.designations, args.json_outfile)
-    child_dict = get_child_dict(lineages)
+    alias = get_alias(args.alias)
+    child_dict = get_child_dict(lineages,alias)
     with open(f"{website_dir}/lineages.md","w") as fall:
         lineage_all = [i for i in lineages.keys() if not i.startswith("*")]
         sorted_all = sort_lineages(lineage_all)
