@@ -27,9 +27,8 @@ cp /raid/shared/$TODAY/figures/*.svg /raid/shared/lineages-website/assets/images
 cd /raid/shared/lineages-website && git pull
 
 git add /raid/shared/lineages-website/lineages.md
-git add /raid/shared/lineages-website/lineages/*.md
+git add /raid/shared/lineages-website/lineages/lineages*/*.md
 git add /raid/shared/lineages-website/global_report_*.md
-git add /raid/shared/lineages-website/_data/lineages.metadata.csv
 git add /raid/shared/lineages-website/_data/lineage_data.json
 git add /raid/shared/lineages-website/_data/grinch_data.json
 git add /raid/shared/lineages-website/assets/images/*.svg
