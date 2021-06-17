@@ -65,23 +65,16 @@ def get_defaults():
                     "config":False,
                     "verbose":False,
                     "analysis":"full",
+                    "metadata":False,
+                    "json":False,
                     "data_column":"sequence_name",
                     "output_prefix":"global_report",
-                    "summary_fields":"node_number,most_recent_tip,tip_count,admin0_count,admin1_count",
-                    "cluster_fields":"node_number,day_range,tip_count,uk_tip_count,uk_chain_count,identical_count",
                     "no_temp":False,
                     "threads":5,
                     "outdir":os.getcwd(),
                     "force":True
                     }
     return default_dict
-
-def get_snakefile(thisdir):
-    snakefile = os.path.join(thisdir, 'scripts','grinch_report.smk')
-    if not os.path.exists(snakefile):
-        sys.stderr.write(cyan(f'Error: cannot find Snakefile at {snakefile}\n Check installation\n'))
-        sys.exit(-1)
-    return snakefile
 
 def get_temp_dir(tempdir_arg,no_temp_arg, cwd,config):
     tempdir = ''
@@ -171,3 +164,8 @@ def yellow(text):
 
 def bold_underline(text):
     return BOLD + UNDERLINE + text + END_FORMATTING
+
+
+def get_snps():
+    snps = "B.1.351=aa:E:P71L;aa:N:T205I;aa:orf1a:K1655N;aa:S:D80A;aa:S:D215G;aa:S:K417N;aa:S:A701V;aa:S:N501Y;aa:S:E484K,B.1.1.7=aa:orf1ab:T1001I;aa:orf1ab:A1708D;aa:orf1ab:I2230T;del:11288:9;del:21765:6;del:21991:3;aa:S:N501Y;aa:S:A570D;aa:S:P681H;aa:S:T716I;aa:S:S982A;aa:S:D1118H;aa:Orf8:Q27*;aa:Orf8:R52I;aa:Orf8:Y73C;aa:N:D3L;aa:N:S235F,P.1=aa:orf1ab:S1188L;aa:orf1ab:K1795Q;del:11288:9;aa:S:L18F;aa:S:T20N;aa:S:P26S;aa:S:D138Y;aa:S:R190S;aa:S:K417T;aa:S:E484K;aa:S:N501Y;aa:S:H655Y;aa:S:T1027I;aa:orf3a:G174C;aa:orf8:E92K;aa:N:P80R"
+    return snps

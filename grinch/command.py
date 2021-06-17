@@ -33,13 +33,13 @@ def main(sysargs = sys.argv[1:]):
     usage='''grinch -i <config.yaml> [options]''')
 
     io_group = parser.add_argument_group('input output options')
+    io_group.add_argument('-a',"--analysis",dest="analysis", action="store",help="Analysis entry point: `full` or `report_only`. Default: `full`")
     io_group.add_argument('-i',"--config", action="store",help="Input config file", dest="config")
     io_group.add_argument('-j',"--json", action="store",help="GISAID JSON data",dest="json")
+    io_group.add_argument('-m',"--metadata", action="store",help="Input metadata",dest="json")
+
     io_group.add_argument('--outdir', action="store",help="Output directory. Default: current working directory")
     io_group.add_argument('-o','--output-prefix', action="store",help="Output prefix. Default: grinch",dest="output_prefix")
-
-    a_group = parser.add_argument_group('Analysis options')
-    a_group.add_argument('-a',"--analysis",dest="analysis", action="store",help="Analysis entry point.")
 
     misc_group = parser.add_argument_group('misc options')
     misc_group.add_argument('--tempdir',action="store",help="Specify where you want the temporary stuff to go Default: $TMPDIR")
@@ -66,8 +66,7 @@ def main(sysargs = sys.argv[1:]):
     config = gfunk.get_defaults()
 
     data_install_checks.check_install(config)
-    snakefile = data_install_checks.get_snakefile(thisdir)
-
+    
     dependency_checks.set_up_verbosity(config)
 
     """
@@ -84,13 +83,25 @@ def main(sysargs = sys.argv[1:]):
     
     config["analysis"] = gfunk.add_arg_to_config("analysis",args.analysis,config)
 
-    
+    gfunk.add_arg_to_config("metadata",args.metadata,config)
+
+    if config["analysis"] not in ["full","report_only"]:
+        sys.stderr.write(cyan(f'Error: please speficify either `full` or `report_only` for analysis option.\n'))
+        sys.exit(-1)
+    elif config["analysis"] == "full":
+        snakefile = data_install_checks.get_snakefile(thisdir)
+    else:
+        if not config["metadata"]:
+            sys.stderr.write(cyan(f'Error: please provide `metadata` for `report_only` grinch.\n'))
+            sys.exit(-1)
+        snakefile = data_install_checks.get_report_snakefile(thisdir)
 
     """
     Output directory 
     """
     # default output dir
     gfunk.add_arg_to_config("outdir",args.outdir,config)
+    config["outdir"]=os.path.abspath(config["outdir"])
     if not os.path.exists(config["outdir"]):
         os.mkdir(config["outdir"])
     figdir  = os.path.join(config["outdir"], "figures")
@@ -105,22 +116,10 @@ def main(sysargs = sys.argv[1:]):
     # specifying temp directory, outdir if no_temp (tempdir becomes working dir)
     tempdir = gfunk.get_temp_dir(args.tempdir, args.no_temp,os.getcwd(),config)
     config["tempdir"] = tempdir
-    """
-    Parsing the report_group arguments, 
-    config options
-    """
 
-    lineages = ["B.1.1.7","B.1.351","P.1","B.1.617.2"]
-    config["lineages_of_concern"] = lineages
-    
-    config["reference"] = pkg_resources.resource_filename('grinch', 'data/reference.fasta')
-    config["lineage_info"] = pkg_resources.resource_filename('grinch', 'data/lineage_info.json')
-    omitted = pkg_resources.resource_filename('grinch', 'data/omitted.csv')
-    config["omitted"] = omitted
+    config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1","B.1.617.2"]
 
-    world_map_file = pkg_resources.resource_filename('grinch', 'data/world_map.json')
-    config["world_map_file"] = world_map_file
-
+    config["snps"] = gfunk.get_snps()
     """
     Miscellaneous options parsing
 
@@ -134,7 +133,7 @@ def main(sysargs = sys.argv[1:]):
     else:
         force_option = True
     
-    config["forceall"] = force_option
+    config["force"] = force_option
 
     gfunk.add_arg_to_config("threads",args.threads,config)
     
@@ -162,8 +161,7 @@ def main(sysargs = sys.argv[1:]):
 
     # config["timestamp"] = gfunk.get_timestamp()
     
-    # find the master Snakefile
-    snakefile = gfunk.get_snakefile(thisdir)
+    
 
     if config['verbose']:
         print(green("\n**** CONFIG ****"))

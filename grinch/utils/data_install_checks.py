@@ -21,6 +21,15 @@ def get_snakefile(thisdir):
         sys.exit(-1)
     return snakefile
 
+
+def get_report_snakefile(thisdir):
+    snakefile = os.path.join(thisdir, 'scripts','render_report.smk')
+    if not os.path.exists(snakefile):
+        sys.stderr.write(cyan(f'Error: cannot find Snakefile at {snakefile}\n Check installation\n'))
+        sys.exit(-1)
+    return snakefile
+
+
 def check_install(config):
     resources = [
         {"key":"reference_fasta",
@@ -29,7 +38,7 @@ def check_install(config):
         {"key":"genbank_ref",
         "directory":"data",
         "filename":"WH04.gb"},
-        {"key":"world_map",
+        {"key":"world_map_file",
         "directory":"data",
         "filename":"world_map.json"},
         {"key":"omitted",
@@ -37,7 +46,13 @@ def check_install(config):
         "filename":"omitted.csv"},
         {"key":"outgroups",
         "directory":"data",
-        "filename":"outgroups.csv"}
+        "filename":"outgroups.csv"},
+        {"key":"continent_file",
+        "directory":"data",
+        "filename":"continent_mapping.csv"},
+        {"key":"lineage_info",
+        "directory":"data",
+        "filename":"lineage_info.json"},
     ]
     for resource in resources:
         package_data_check(resource["filename"],resource["directory"],resource["key"],config)
