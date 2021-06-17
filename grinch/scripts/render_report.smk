@@ -17,7 +17,6 @@ rule render_report:
         data_for_website.py \
         --metadata {input.metadata:q} \
         --outdir {config[outdir]:q} \
-        --variants-info {config[variants_csv]:q} \
         --data {output.data:q} 
         """)
         print(gfunk.green("Grinch reports written to:"), config["outdir"])

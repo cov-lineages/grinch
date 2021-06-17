@@ -18,7 +18,6 @@ def parse_args():
     parser.add_argument("--metadata", required=True, help="metadata file", dest="metadata")
     parser.add_argument("--data", help="output data file", dest="data")
     parser.add_argument("--outdir", help="output dir", dest="outdir")
-    parser.add_argument("--variants-info", help="variants_info",dest="variants_info")
     return parser.parse_args()
 
 def parse_import_data(import_report):
