@@ -65,6 +65,10 @@ def get_defaults():
                     "config":False,
                     "verbose":False,
                     "analysis":"full",
+                    "filename":False,
+                    "url":False,
+                    "username":False,
+                    "password":False,
                     "metadata":False,
                     "json":False,
                     "data_column":"sequence_name",
@@ -119,8 +123,7 @@ def parse_yaml_file(configfile,config):
 def add_arg_to_config(key,arg,config):
     if arg:
         config[key] = arg
-
-    pkg_resources.resource_filename('grinch', 'data/omitted.csv')
+    
 def colour(text, text_colour):
     bold_text = 'bold' in text_colour
     text_colour = text_colour.replace('bold', '')

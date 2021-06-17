@@ -4,6 +4,7 @@ from grinch.utils.log_colours import green,cyan,red
 import sys
 import os
 
+from grinch.utils import grinchfunks as gfunk
 
 def package_data_check(filename,directory,key,config):
     try:
@@ -32,7 +33,7 @@ def get_report_snakefile(thisdir):
 
 def check_install(config):
     resources = [
-        {"key":"reference_fasta",
+        {"key":"reference",
         "directory":"data",
         "filename":"reference.fasta"},
         {"key":"genbank_ref",
@@ -59,3 +60,28 @@ def check_install(config):
 
 # config={}
 # check_install()
+
+def check_access(json,username,password,url,filename,cwd,config):
+    if json:
+        json = os.path.join(cwd,json)
+    gfunk.add_arg_to_config("json",json,config)
+    gfunk.add_arg_to_config("username",username,config)
+    gfunk.add_arg_to_config("password",password,config)
+    gfunk.add_arg_to_config("url",url,config)
+    gfunk.add_arg_to_config("filename",filename,config)
+
+    if not config["json"] and config["analysis"]=="full":
+        if not config["username"] or not config["password"] or not config["url"] or not config["filename"]:
+            sys.stderr.write(cyan(f'Error: please either provide a json file, a metadata file (with analysis option `report_only`) or the correct gisaid access information.\n'))
+            sys.exit(-1)
+
+    if not config["metadata"] and config["analysis"]=="report_only":
+        sys.stderr.write(cyan(f'Error: please provide a metadata file (with analysis option `report_only`) or the correct gisaid access information, or a json file of gisaid data.\n'))
+        sys.exit(-1)
+    elif config["metadata"]:
+        config["metadata"] = os.path.join(cwd,config["metadata"])
+        if not os.path.exists(config["metadata"]):
+            sys.stderr.write(cyan(f'Error: metadata input file not found ') + f"{config['metadata']}\n")
+            sys.exit(-1)
+
+    

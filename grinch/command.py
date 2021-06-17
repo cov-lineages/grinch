@@ -33,13 +33,18 @@ def main(sysargs = sys.argv[1:]):
     usage='''grinch -i <config.yaml> [options]''')
 
     io_group = parser.add_argument_group('input output options')
-    io_group.add_argument('-a',"--analysis",dest="analysis", action="store",help="Analysis entry point: `full` or `report_only`. Default: `full`")
+    io_group.add_argument('-a',"--analysis",action="store",help="Analysis entry point: `full` or `report_only`. Default: `full`",dest="analysis")
     io_group.add_argument('-i',"--config", action="store",help="Input config file", dest="config")
     io_group.add_argument('-j',"--json", action="store",help="GISAID JSON data",dest="json")
-    io_group.add_argument('-m',"--metadata", action="store",help="Input metadata",dest="json")
+    io_group.add_argument('-m',"--metadata", action="store",help="Input metadata",dest="metadata")
 
     io_group.add_argument('--outdir', action="store",help="Output directory. Default: current working directory")
     io_group.add_argument('-o','--output-prefix', action="store",help="Output prefix. Default: grinch",dest="output_prefix")
+
+    io_group.add_argument('--filename', action="store",help="File to access.")
+    io_group.add_argument('--url', action="store",help="URL to access.")
+    io_group.add_argument('--username', action="store",help="Username for access.")
+    io_group.add_argument('--password', action="store",help="Password for access.")
 
     misc_group = parser.add_argument_group('misc options')
     misc_group.add_argument('--tempdir',action="store",help="Specify where you want the temporary stuff to go Default: $TMPDIR")
@@ -80,8 +85,8 @@ def main(sysargs = sys.argv[1:]):
     # if a yaml file is detected, add everything in it to the config dict
     if config["config"]:
         gfunk.parse_yaml_file(config["config"], config)
-    
-    config["analysis"] = gfunk.add_arg_to_config("analysis",args.analysis,config)
+
+    gfunk.add_arg_to_config("analysis",args.analysis,config)
 
     gfunk.add_arg_to_config("metadata",args.metadata,config)
 
@@ -95,6 +100,9 @@ def main(sysargs = sys.argv[1:]):
             sys.stderr.write(cyan(f'Error: please provide `metadata` for `report_only` grinch.\n'))
             sys.exit(-1)
         snakefile = data_install_checks.get_report_snakefile(thisdir)
+
+    config["flight_data_path"] = os.path.join(thisdir,"data","flights")
+    config["import_report_path"] = os.path.join(thisdir,"data")
 
     """
     Output directory 
@@ -117,7 +125,7 @@ def main(sysargs = sys.argv[1:]):
     tempdir = gfunk.get_temp_dir(args.tempdir, args.no_temp,os.getcwd(),config)
     config["tempdir"] = tempdir
 
-    config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1","B.1.617.2"]
+    config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1","B.1.617.2","A.23.1","B.1.525"]
 
     config["snps"] = gfunk.get_snps()
     """
@@ -144,9 +152,11 @@ def main(sysargs = sys.argv[1:]):
         sys.exit(-1)
     threads = config["threads"]
 
-    if args.json:
-        config["json"] = os.path.join(os.getcwd(),args.json)
-    else:
+    data_install_checks.check_access(args.json,args.username,args.password,args.url,args.filename,os.getcwd(),config)
+
+    if config["json"]:
+        pass
+    elif config["analysis"]=="full":
         fn = config["filename"]
         fn_unzipped = ".".join(fn.split(".")[:-1])
         if os.path.exists(fn):
@@ -158,6 +168,11 @@ def main(sysargs = sys.argv[1:]):
                     "&& "
                     f"bzip2 -d {fn} ")
         config["json"] = os.path.join(os.getcwd(),fn_unzipped)
+
+    elif config["analysis"]=="report_only":
+        if not config["metadata"]:
+            sys.stderr.write(gfunk.cyan('Error: provide a metadata file.\n'))
+            sys.exit(-1)
 
     # config["timestamp"] = gfunk.get_timestamp()
     
