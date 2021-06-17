@@ -97,7 +97,7 @@ def make_summary_data(metadata,import_data,raw_data,lineages_of_concern):
 
                 d = date.fromisoformat(row["sample_date"])
                 cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
-                travel_history = row["travel_history"]
+                travel_history = row["edin_travel"]
                 lineage = row["lineage"]
                 if d < cut_off: 
                     pass

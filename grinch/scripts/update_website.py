@@ -100,7 +100,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                 country = row["country"]
                 
                 d = date.fromisoformat(row["sample_date"])
-                travel_history = row["travel_history"]
+                travel_history = row["edin_travel"]
                 lineage = row["lineage"]
 
                 if lineage != "" and lineage in description_dict:
