@@ -1,5 +1,5 @@
-import figure_generation as fig_gen
-import grinchfunks as gfunk
+from grinch.utils import grinchfunks as gfunk
+from grinch.figure_generation import figurefunks as fig_gen
 
 
 output_prefix = config["output_prefix"]
@@ -19,4 +19,3 @@ rule render_report:
         --outdir {config[outdir]:q} \
         --data {output.data:q} 
         """)
-        print(gfunk.green("Grinch reports written to:"), config["outdir"])
