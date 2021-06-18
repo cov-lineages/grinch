@@ -285,7 +285,8 @@ def plot_count_map(figdir, with_info, lineage):
     fig, ax = plt.subplots(figsize=(10,10))
 
     with_info = with_info.to_crs("EPSG:4326")
-    with_info.plot(ax=ax, cmap=muted_pal, legend=True, column="log_number_of_sequences", 
+    with_info.plot(ax=ax, cmap=muted_pal, legend=True, legend_kwds={'shrink':0.3},
+                    column="log_number_of_sequences", 
                     missing_kwds={"color": "lightgrey","label": "No variant recorded"})
 
     
