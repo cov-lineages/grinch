@@ -255,31 +255,46 @@ def update_pages():
             sorted_all.append(i)
         fall.write(f"---\nlayout: go_to_page\ntitle: 'Go to lineage:'\nchildren: {sorted_all}\n---\n")
     c=0
-    for lineage in lineages:
-        if not lineage.startswith("*"):
-            c +=1
-            if c<500:
-                lineage_dir = os.path.join(lineage_path, "lineages1")
-            elif c<1000:
-                lineage_dir = os.path.join(lineage_path, "lineages2")
-            elif c<1500:
-                lineage_dir = os.path.join(lineage_path, "lineages3")
-            elif c<2000:
-                lineage_dir = os.path.join(lineage_path, "lineages4")
-            elif c<2500:
-                lineage_dir = os.path.join(lineage_path, "lineages5")
-            else:
-                lineage_dir = os.path.join(lineage_path, "lineages6")
-            if not os.path.exists(lineage_dir):
-                os.mkdir(lineage_dir)
-            if lineage =="A":
-                with open(f"{lineage_dir}/lineage_{lineage}.md","w") as fw:
-                    fw.write(f"""---\npermalink: /lineages/lineage_{lineage}.html\nlayout: lineage_page\ntitle: Lineage {lineage}\nlineage: {lineage}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
-            else:
-                with open(f"{lineage_dir}/lineage_{lineage}.md","w") as fw:
-                    fw.write(f"""---\npermalink: /lineages/lineage_{lineage}.html\nlayout: lineage_page\ntitle: Lineage {lineage}\nlineage: {lineage}\nparent: {get_parent(lineage,alias)}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
 
+    with open(f"{website_dir}/data/lineages.yml","w") as lineage_file:
+        for lineage in lineages:
+            if not lineage.startswith("*"):
+                c +=1
+                if c<500:
+                    lineage_dir = os.path.join(lineage_path, "lineages1")
+                elif c<1000:
+                    lineage_dir = os.path.join(lineage_path, "lineages2")
+                elif c<1500:
+                    lineage_dir = os.path.join(lineage_path, "lineages3")
+                elif c<2000:
+                    lineage_dir = os.path.join(lineage_path, "lineages4")
+                elif c<2500:
+                    lineage_dir = os.path.join(lineage_path, "lineages5")
+                else:
+                    lineage_dir = os.path.join(lineage_path, "lineages6")
+                if not os.path.exists(lineage_dir):
+                    os.mkdir(lineage_dir)
+                if lineage =="A":
+                    with open(f"{lineage_dir}/lineage_{lineage}.md","w") as fw:
+                        fw.write(f"""---\npermalink: /lineages/lineage_{lineage}.html\nlayout: lineage_page\ntitle: Lineage {lineage}\nredirect_to: ../lineage.html?lineage={lineage}\nlineage: {lineage}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
+                
+                    lineage_file.write("- name: " + lineage + "\n")
+                    lineage_file.write("  children:\n")
 
+                    for child in sort_lineages(get_children(lineage, child_dict)):
+                        lineage_file.write("      - " + child + "\n")
+
+                else:
+                    with open(f"{lineage_dir}/lineage_{lineage}.md","w") as fw:
+                        fw.write(f"""---\npermalink: /lineages/lineage_{lineage}.html\nlayout: lineage_page\ntitle: Lineage {lineage}\nredirect_to: ../lineage.html?lineage={lineage}\nlineage: {lineage}\nparent: {get_parent(lineage,alias)}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
+
+                    lineage_file.write("- name: " + lineage + "\n")
+                    lineage_file.write("  children:\n")
+
+                    for child in sort_lineages(get_children(lineage, child_dict)):
+                        lineage_file.write("      - " + child + "\n")
+
+                    lineage_file.write("  parent: " + get_parent(lineage,alias) + "\n")
 
 
 if __name__ == '__main__':
