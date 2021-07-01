@@ -256,7 +256,7 @@ def update_pages():
         fall.write(f"---\nlayout: go_to_page\ntitle: 'Go to lineage:'\nchildren: {sorted_all}\n---\n")
     c=0
 
-    with open(f"{website_dir}/_data/lineages.yml","w") as lineage_file:
+    with open(f"{website_dir}/data/lineages.yml","w") as lineage_file:
         for lineage in lineages:
             if not lineage.startswith("*"):
                 c +=1
