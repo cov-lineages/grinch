@@ -6,6 +6,7 @@ import argparse
 import collections
 from datetime import date
 import datetime
+import shutil
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Update lineage web pages for cov-lineages.org')
@@ -296,7 +297,7 @@ def update_pages():
 
                     lineage_file.write("  parent: " + get_parent(lineage,alias) + "\n")
 
-
+        copyFile = shutil.copy(f"{website_dir}/data/lineages.yml", f"{website_dir}/_data/lineages.yml")
 if __name__ == '__main__':
 
     update_pages()
