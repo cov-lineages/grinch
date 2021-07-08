@@ -38,6 +38,7 @@ cp /localdisk/home/shared/raccoon-dog/"$TODAY"_website/figures/*.svg ~/git/linea
 
 git add ~/git/lineages-website/lineages.md
 git add ~/git/lineages-website/lineages/*.md
+git add ~/git/lineages-website/lineages/*/*.md
 git add ~/git/lineages-website/global_report_*.md
 git add ~/git/lineages-website/_data/lineage_data.json
 git add ~/git/lineages-website/_data/grinch_data.json
