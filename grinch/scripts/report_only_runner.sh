@@ -37,11 +37,13 @@ cp /localdisk/home/shared/raccoon-dog/"$TODAY"_website/report/grinch_data.json ~
 cp /localdisk/home/shared/raccoon-dog/"$TODAY"_website/figures/*.svg ~/git/lineages-website/assets/images/
 
 git add ~/git/lineages-website/lineages.md
-git add ~/git/lineages-website/lineages/lineages*/*.md
+git add ~/git/lineages-website/lineages/*.md
 git add ~/git/lineages-website/global_report_*.md
 git add ~/git/lineages-website/_data/lineage_data.json
 git add ~/git/lineages-website/_data/grinch_data.json
 git add ~/git/lineages-website/assets/images/*.svg
+git add ~/git/lineages-website/_data/lineages.yml
+git add ~/git/lineages-website/data/lineages.yml
 
 git commit -m "updating website $TODAY"
 git push
