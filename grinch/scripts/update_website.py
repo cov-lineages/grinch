@@ -247,14 +247,6 @@ def update_pages():
     lineages = make_summary_info(args.metadata, args.lineage_notes, args.designations, args.json_outfile)
     alias = get_alias(args.alias)
     child_dict = get_child_dict(lineages,alias)
-    with open(f"{website_dir}/lineages.md","w") as fall:
-        lineage_all = [i for i in lineages.keys() if not i.startswith("*")]
-        sorted_all = sort_lineages(lineage_all)
-        lineage_old = [i for i in lineages.keys() if i.startswith("*")]
-        sorted_old = sort_lineages(lineage_old)
-        for i in sorted_old:
-            sorted_all.append(i)
-        fall.write(f"---\nlayout: go_to_page\ntitle: 'Go to lineage:'\nchildren: {sorted_all}\n---\n")
     c=0
 
     with open(f"{website_dir}/data/lineages.yml","w") as lineage_file:
