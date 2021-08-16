@@ -168,12 +168,15 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
             if seq_country in country_to_new_country and seq_country not in absent_countries:
                 new_country = country_to_new_country[seq_country]
                 date = dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
-                if date >= loc_to_earliest_date[new_country]:
-                    if new_country not in country_new_seqs:
-                        country_new_seqs[new_country] = 1
-                    else:
-                        country_new_seqs[new_country] += 1
-                    country_dates[new_country].append(date)
+                try:
+                    if date >= loc_to_earliest_date[new_country]:
+                        if new_country not in country_new_seqs:
+                            country_new_seqs[new_country] = 1
+                        else:
+                            country_new_seqs[new_country] += 1
+                        country_dates[new_country].append(date)
+                except:
+                    print(seq_country, new_country, date)
             elif seq_country in absent_countries:
                 # print(seq_country)
                 pass
