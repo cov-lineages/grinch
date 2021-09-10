@@ -2,6 +2,16 @@
 
 global report investigating novel coronavirus haplotypes
 
+## Description
+
+grinch is an analysis pipeline that populates the cov-lineages.org website. Until recently all data processing for the website was performed by the grinch pipeline. 
+
+We now use the metadata output of https://github.com/COG-UK/datapipe and generate the aggregate macrodata, maps and figures using grinch with the option `-a report-only`. The output json files of grinch are hosted at https://github.com/cov-lineages/lineages-website/tree/master/\_data. 
+
+This pipeline gets run daily on our local server (which we've also called grinch 🤷‍♀️), purchased thanks to [Fast Grants](https://fastgrants.org/).
+
+## Usage
+
 ```
 usage: grinch -i <config.yaml> [options]
 
@@ -36,6 +46,9 @@ misc options:
   -v, --version         show program's version number and exit
 ```
 
+## General usage
+We do not expect most users to run grinch themselves, particularly now as the bulk download from GISAID is pretty large. We have provided the aggregate data for both the grinch reports and lineage pages at https://github.com/cov-lineages/lineages-website and they can be seen at https://cov-lineages.org/global_report.html.
+
 ## How to deploy a local version of the grinch pipeline
 - Clone this repository
 - Create the conda environment from the environment.yml file with `conda env create -f environment.yml`
@@ -49,7 +62,7 @@ grinch -t 10 -a report_only -m input_metadata.csv --outdir /your/output/director
 An appropriate metadata file can be generated using a pipeline similar to https://github.com/COG-UK/datapipe
 
 ## Full grinch processing pipeline
-- Run grinch by supplying a custom config.yaml file of the format:
+Run grinch by supplying a custom config.yaml file of the format:
 ```
 username: 
 filename: 
