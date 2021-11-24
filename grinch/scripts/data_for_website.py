@@ -93,8 +93,10 @@ def make_summary_data(metadata,import_data,raw_data,lineages_of_concern):
         for row in reader:
             if row["sample_date"]:
                 country = row["country"]
-
-                d = date.fromisoformat(row["sample_date"])
+                try:
+                    d = date.fromisoformat(row["sample_date"])
+                except:
+                    pass
                 cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
                 travel_history = row["edin_travel"]
                 lineage = row["lineage"]

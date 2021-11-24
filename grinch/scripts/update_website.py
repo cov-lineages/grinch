@@ -35,11 +35,15 @@ def get_description_dict(description_file):
         for l in f:
             l = l.rstrip("\n")
             tokens = l.split('\t')
-            if tokens[0] != "Lineage":
-                if tokens[0].startswith("*"):
-                    lin = tokens[0].lstrip("*")
-                    lineages[lin] = f"Lineage reassigned. {tokens[1]}"
-                lineages[tokens[0]]= tokens[1]
+            try:
+                if tokens[0] != "Lineage":
+                    if tokens[0].startswith("*"):
+                        lin = tokens[0].lstrip("*")
+                        lineages[lin] = f"Lineage reassigned. {tokens[1]}"
+                    lineages[tokens[0]]= tokens[1]
+            except:
+                print(tokens)
+                print(tokens[0] in lineages)
     return lineages
 
 def get_conversion_dict():

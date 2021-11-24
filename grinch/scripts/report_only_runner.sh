@@ -49,4 +49,45 @@ git add ~/git/lineages-website/data/lineages.yml
 git commit -m "updating website $TODAY"
 git push
 
+PANGO=/localdisk/home/shared/raccoon-dog/"$TODAY"_gisaid/publish/pangolin/*.cache.csv
+echo "Using pango file $PANGO"
+conda activate datapipe
+pangoLEARN_version=$(pangolin --all-versions | grep "pango-designation used by pangoLEARN/Usher" | cut -f5 -d" ")
+
+cd ~/git/pangolin-assignment
+current_pangoLEARN_version=$(cat pangolin_assignment/__init__.py | grep "__version__" | cut -f3 -d" ")
+major_version=${current_pangoLEARN_version:1:7}
+minor_version=${current_pangoLEARN_version:9:1}
+echo $pangoLEARN_version
+echo $current_pangoLEARN_version
+echo $major_version
+echo $minor_version
+
+mv pango_assignment.cache.*.csv old.csv
+
+if [[ $(wc -l <$PANGO) -ge 4000000 ]]
+then
+  cp $PANGO pango_assignment.cache."$TODAY".csv
+  echo "Replace file with new assignments"
+  if [[ $pangoLEARN_version == $current_pangoLEARN_version ]]
+  then
+    minor_version=$((minor_version + 1))
+  else
+    minor_version=0
+    major_version=$pangoLEARN_version
+  fi
+else
+  head -n1 $PANGO > pango_assignment.cache."$TODAY".csv
+  cat $PANGO old.csv | sort -u | tail -n+1 >> pango_assignment.cache."$TODAY".csv
+  echo "Add to assignments"
+fi
+gzip -c ~/git/pangolin-assignment/pango_assignment.cache."$TODAY".csv > ~/git/pangolin-assignment/pangolin_assignment/pango_assignment.cache.csv.gz
+git add pangolin_assignment/pango_assignment.cache.csv.gz
+echo '_program = "pangolin-assignment"' > ~/git/pangolin-assignment/pangolin_assignment/__init__.py
+echo "__version__ = \"$major_version.$minor_version\" >> ~/git/pangolin-assignment/pangolin_assignment/__init__.py
+echo "__date__ = \"$TODAY\"" >> ~/git/pangolin-assignment/pangolin_assignment/__init__.py
+git add pangolin_assignment/__init__.py
+git commit -m "update lineage assignment cache $TODAY"
+git push
+
 echo "Finished!"

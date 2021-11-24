@@ -167,7 +167,10 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                 seq_country = seq["sequence_name"].split("/")[0].upper().replace(" ","_")
             if seq_country in country_to_new_country and seq_country not in absent_countries:
                 new_country = country_to_new_country[seq_country]
-                date = dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
+                try:
+                    date = dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
+                except:
+                    print(seq_country, new_country, seq["sample_date"])
                 try:
                     if date >= loc_to_earliest_date[new_country]:
                         if new_country not in country_new_seqs:
