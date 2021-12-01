@@ -98,8 +98,21 @@ def make_summary_data(metadata,import_data,raw_data,lineages_of_concern):
                 except:
                     pass
                 cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+                
                 travel_history = row["edin_travel"]
                 lineage = row["lineage"]
+
+                if lineage == "B.1.1.7": 
+                    cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+                elif lineage == "B.1.351":
+                    cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+                elif lineage == "P.1":
+                    cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+                elif lineage == "B.1.617.2":
+                    cut_off = datetime.strptime("2021-03-01", "%Y-%m-%d").date()
+                elif lineage == "B.1.1.529":
+                    cut_off = datetime.strptime("2021-09-01", "%Y-%m-%d").date()
+                    
                 if d < cut_off: 
                     pass
                 else:
