@@ -91,7 +91,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
     with open(metadata) as f:
         data = csv.DictReader(f)
         
-        cut_off = dt.strptime("2020-09-01", "%Y-%m-%d").date()
+        cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
                 
         lineage = row["lineage"]
 
@@ -110,7 +110,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
         else:
             for seq in data:
                 try:
-                    sample_date = dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
+                    sample_date = datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
                     if sample_date < cut_off:
                         pass
                     else:
@@ -132,7 +132,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                                 pass
                             elif new_country != "":
                                 try:
-                                    locations_to_dates[new_country].append(dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date())
+                                    locations_to_dates[new_country].append(datetime.strptime(seq["sample_date"], "%Y-%m-%d").date())
                                 except:
                                     pass
                             country_to_new_country[seq_country] = new_country
@@ -185,7 +185,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
             if seq_country in country_to_new_country and seq_country not in absent_countries:
                 new_country = country_to_new_country[seq_country]
                 try:
-                    date = dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
+                    date = datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
                 except:
                     print(seq_country, new_country, seq["sample_date"])
                 try:
