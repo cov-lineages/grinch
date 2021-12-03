@@ -5,7 +5,7 @@ import os
 import argparse
 import collections
 from datetime import date
-import datetime
+from datetime import datetime
 import shutil
 
 def parse_args():
@@ -107,35 +107,80 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                 d = date.fromisoformat(row["sample_date"])
                 travel_history = row["edin_travel"]
                 lineage = row["lineage"]
+                if lineage in ["B.1.1.7","B.1.351","P.1","B.1.617.2","B.1.1.529"]:
+                    cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+                
+                    if lineage == "B.1.1.7": 
+                        cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+                    elif lineage == "B.1.351":
+                        cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+                    elif lineage == "P.1":
+                        cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+                    elif lineage == "B.1.617.2":
+                        cut_off = datetime.strptime("2021-03-01", "%Y-%m-%d").date()
+                    elif lineage == "B.1.1.529":
+                        cut_off = datetime.strptime("2021-09-01", "%Y-%m-%d").date()
+                    
+                    if d < cut_off: 
+                        pass
+                    else:
+                        if lineage != "" and lineage in description_dict:
+                            
+                            if country == "Caribbean":
+                                country = row["sequence_name"].split("/")[0]
+                            
+                            if country in conversion_dict:
+                                country = conversion_dict[country]
+                            
+                            summary_dict[lineage]["Countries"][country]+=1
+                            
+                            if summary_dict[lineage]["Earliest date"]:
+                            
+                                if d < summary_dict[lineage]["Earliest date"]:
+                                    summary_dict[lineage]["Earliest date"] = d
+                            else:
+                                summary_dict[lineage]["Earliest date"] = d
+                            
+                            summary_dict[lineage]["Date"][str(d)] +=1
+                            if country not in summary_dict[lineage]["Country counts"]:
+                                summary_dict[lineage]["Country counts"][country] = collections.Counter()
+                                summary_dict[lineage]["Country counts"][country][str(d)]+=1
+                            else:
+                                summary_dict[lineage]["Country counts"][country][str(d)]+=1
 
-                if lineage != "" and lineage in description_dict:
-                    
-                    if country == "Caribbean":
-                        country = row["sequence_name"].split("/")[0]
-                    
-                    if country in conversion_dict:
-                        country = conversion_dict[country]
-                    
-                    summary_dict[lineage]["Countries"][country]+=1
-                    
-                    if summary_dict[lineage]["Earliest date"]:
-                    
-                        if d < summary_dict[lineage]["Earliest date"]:
+                            summary_dict[lineage]["Number assigned"] +=1 
+
+                            if travel_history:
+                                summary_dict[lineage]["Travel history"][travel_history]+=1
+                else:
+                    if lineage != "" and lineage in description_dict:
+                            
+                        if country == "Caribbean":
+                            country = row["sequence_name"].split("/")[0]
+                        
+                        if country in conversion_dict:
+                            country = conversion_dict[country]
+                        
+                        summary_dict[lineage]["Countries"][country]+=1
+                        
+                        if summary_dict[lineage]["Earliest date"]:
+                        
+                            if d < summary_dict[lineage]["Earliest date"]:
+                                summary_dict[lineage]["Earliest date"] = d
+                        else:
                             summary_dict[lineage]["Earliest date"] = d
-                    else:
-                        summary_dict[lineage]["Earliest date"] = d
-                    
-                    summary_dict[lineage]["Date"][str(d)] +=1
-                    if country not in summary_dict[lineage]["Country counts"]:
-                        summary_dict[lineage]["Country counts"][country] = collections.Counter()
-                        summary_dict[lineage]["Country counts"][country][str(d)]+=1
-                    else:
-                        summary_dict[lineage]["Country counts"][country][str(d)]+=1
+                        
+                        summary_dict[lineage]["Date"][str(d)] +=1
+                        if country not in summary_dict[lineage]["Country counts"]:
+                            summary_dict[lineage]["Country counts"][country] = collections.Counter()
+                            summary_dict[lineage]["Country counts"][country][str(d)]+=1
+                        else:
+                            summary_dict[lineage]["Country counts"][country][str(d)]+=1
 
-                    summary_dict[lineage]["Number assigned"] +=1 
+                        summary_dict[lineage]["Number assigned"] +=1 
 
-                    if travel_history:
-                        summary_dict[lineage]["Travel history"][travel_history]+=1
+                        if travel_history:
+                            summary_dict[lineage]["Travel history"][travel_history]+=1
             except:
                 pass
     for lineage in summary_dict:
