@@ -13,6 +13,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import cm
 import pandas as pd
 import datetime as dt
+from datetime import datetime
 import seaborn as sns
 import numpy as np
 import math
@@ -90,10 +91,25 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
     with open(metadata) as f:
         data = csv.DictReader(f)
         
-        cut_off = dt.datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+        
         for seq in data:
+            cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+                
+            lineage = seq["lineage"]
+
+            if lineage == "B.1.1.7": 
+                cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+            elif lineage == "B.1.351":
+                cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+            elif lineage == "P.1":
+                cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
+            elif lineage == "B.1.617.2":
+                cut_off = datetime.strptime("2021-03-01", "%Y-%m-%d").date()
+            elif lineage == "B.1.1.529":
+                cut_off = datetime.strptime("2021-09-01", "%Y-%m-%d").date()
+
             try:
-                sample_date = dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
+                sample_date = datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
                 if sample_date < cut_off:
                     pass
                 else:
@@ -115,7 +131,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                             pass
                         elif new_country != "":
                             try:
-                                locations_to_dates[new_country].append(dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date())
+                                locations_to_dates[new_country].append(datetime.strptime(seq["sample_date"], "%Y-%m-%d").date())
                             except:
                                 pass
                         country_to_new_country[seq_country] = new_country
@@ -168,7 +184,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
             if seq_country in country_to_new_country and seq_country not in absent_countries:
                 new_country = country_to_new_country[seq_country]
                 try:
-                    date = dt.datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
+                    date = datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
                 except:
                     print(seq_country, new_country, seq["sample_date"])
                 try:
