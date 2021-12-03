@@ -13,6 +13,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from matplotlib import cm
 import pandas as pd
 import datetime as dt
+from datetime import datetime
 import seaborn as sns
 import numpy as np
 import math
@@ -95,15 +96,15 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
         lineage = row["lineage"]
 
         if lineage == "B.1.1.7": 
-            cut_off = dt.strptime("2020-09-01", "%Y-%m-%d").date()
+            cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
         elif lineage == "B.1.351":
-            cut_off = dt.strptime("2020-09-01", "%Y-%m-%d").date()
+            cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
         elif lineage == "P.1":
-            cut_off = dt.strptime("2020-09-01", "%Y-%m-%d").date()
+            cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
         elif lineage == "B.1.617.2":
-            cut_off = dt.strptime("2021-03-01", "%Y-%m-%d").date()
+            cut_off = datetime.strptime("2021-03-01", "%Y-%m-%d").date()
         elif lineage == "B.1.1.529":
-            cut_off = dt.strptime("2021-09-01", "%Y-%m-%d").date()
+            cut_off = datetime.strptime("2021-09-01", "%Y-%m-%d").date()
         if d < cut_off: 
             pass
         else:
