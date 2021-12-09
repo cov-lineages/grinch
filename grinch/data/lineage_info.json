@@ -39,8 +39,8 @@
         "detected": "India",
         "source": "https://github.com/cov-lineages/pango-designation/issues/49"
     },
-    "B.1.1.529": {
-        "description":"A lineage detected in a number of countries with a high number of spike protein mutations, since named the Omicron Variant of Concern by the WHO. Designated through GitHub issues https://github.com/cov-lineages/pango-designation/issues/343",
+    "BA.1": {
+        "description":"A lineage detected in a number of countries with a high number of spike protein mutations, since named the Omicron Variant of Concern by the WHO. Designated through GitHub issues https://github.com/cov-lineages/pango-designation/issues/343 and https://github.com/cov-lineages/pango-designation/issues/361",
         "snps":"del:6513:3;del:11283:9;nuc:C241T;ORF1A:K856R;nuc:C3037T;nuc:T5386G;ORF1A:A2710T;ORF1A:T3255I;ORF1A:P3395H;ORF1A:I3758V;nuc:T13195C;ORF1B:P314L;nuc:C15240T;ORF1B:I1566V;S:A67V;S:T95I;S:G339D;S:S371L;S:S373P;S:K417N;S:N440K;S:G446S;S:S477N;S:T478K;S:E484A;S:Q493R;S:G496S;S:Q498R;S:N501Y;S:T547K;S:D614G;S:H655Y;S:N679K;S:P681H;S:N764K;S:D796Y;S:N856K;S:Q954H;S:N969K;nuc:C25000T;E:T9I;M:D3G;M:Q19E;M:A63T;nuc:A27259C;nuc:C27807T;N:RG203KR",
         "min_snps": 32,
         "max_snps": 47,
