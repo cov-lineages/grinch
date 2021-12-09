@@ -105,7 +105,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                 cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
             elif lineage == "B.1.617.2":
                 cut_off = datetime.strptime("2021-03-01", "%Y-%m-%d").date()
-            elif lineage == "B.1.1.529":
+            elif lineage == "BA.1":
                 cut_off = datetime.strptime("2021-09-01", "%Y-%m-%d").date()
 
             try:

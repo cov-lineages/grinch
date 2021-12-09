@@ -125,7 +125,7 @@ def main(sysargs = sys.argv[1:]):
     tempdir = gfunk.get_temp_dir(args.tempdir, args.no_temp,os.getcwd(),config)
     config["tempdir"] = tempdir
 
-    config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1","B.1.617.2","B.1.1.529"]
+    config["lineages_of_concern"] = ["B.1.1.7","B.1.351","P.1","B.1.617.2","BA.1"]
 
     config["snps"] = gfunk.get_snps()
     """

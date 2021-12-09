@@ -33,7 +33,7 @@ cp /localdisk/home/shared/raccoon-dog/"$TODAY"_website/report/global_report_B.1.
 cp /localdisk/home/shared/raccoon-dog/"$TODAY"_website/report/global_report_B.1.351.md ~/git/lineages-website/global_report_B.1.351.md
 cp /localdisk/home/shared/raccoon-dog/"$TODAY"_website/report/global_report_P.1.md ~/git/lineages-website/global_report_P.1.md
 cp /localdisk/home/shared/raccoon-dog/"$TODAY"_website/report/global_report_B.1.617.2.md ~/git/lineages-website/global_report_B.1.617.2.md
-cp /localdisk/home/shared/raccoon-dog/"$TODAY"_website/report/global_report_B.1.1.529.md ~/git/lineages-website/global_report_B.1.1.529.md
+cp /localdisk/home/shared/raccoon-dog/"$TODAY"_website/report/global_report_BA.1.md ~/git/lineages-website/global_report_BA.1.md
 
 cp /localdisk/home/shared/raccoon-dog/"$TODAY"_website/report/grinch_data.json ~/git/lineages-website/_data/grinch_data.json
 

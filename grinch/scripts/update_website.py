@@ -107,7 +107,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                 d = date.fromisoformat(row["sample_date"])
                 travel_history = row["edin_travel"]
                 lineage = row["lineage"]
-                if lineage in ["B.1.1.7","B.1.351","P.1","B.1.617.2","B.1.1.529"]:
+                if lineage in ["B.1.1.7","B.1.351","P.1","B.1.617.2","BA.1"]:
                     cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
                 
                     if lineage == "B.1.1.7": 
@@ -118,7 +118,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                         cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
                     elif lineage == "B.1.617.2":
                         cut_off = datetime.strptime("2021-03-01", "%Y-%m-%d").date()
-                    elif lineage == "B.1.1.529":
+                    elif lineage == "BA.1":
                         cut_off = datetime.strptime("2021-09-01", "%Y-%m-%d").date()
                     
                     if d < cut_off: 
