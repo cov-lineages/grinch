@@ -110,7 +110,7 @@ def make_summary_data(metadata,import_data,raw_data,lineages_of_concern):
                     cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
                 elif lineage == "B.1.617.2":
                     cut_off = datetime.strptime("2021-03-01", "%Y-%m-%d").date()
-                elif lineage == "B.1.1.529":
+                elif lineage == "B.1.1.529" or lineage.startswith("BA."):
                     cut_off = datetime.strptime("2021-09-01", "%Y-%m-%d").date()
                     
                 if d < cut_off: 
@@ -206,7 +206,7 @@ def make_constellation_data(metadata,variant_info,lineages_of_concern):
                         cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
                     elif lineage == "B.1.617.2":
                         cut_off = datetime.strptime("2021-03-01", "%Y-%m-%d").date()
-                    elif lineage == "B.1.1.529":
+                    elif lineage == "B.1.1.529" or lineage.startswith("BA."):
                         cut_off = datetime.strptime("2021-09-01", "%Y-%m-%d").date()
                     if d < cut_off: 
                         pass
