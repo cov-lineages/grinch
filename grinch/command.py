@@ -41,6 +41,7 @@ def main(sysargs = sys.argv[1:]):
     io_group.add_argument('--outdir', action="store",help="Output directory. Default: current working directory")
     io_group.add_argument('-o','--output-prefix', action="store",help="Output prefix. Default: grinch",dest="output_prefix")
 
+    io_group.add_argument("--alias",action="store",help="Alias JSON file")
     io_group.add_argument('--filename', action="store",help="File to access.")
     io_group.add_argument('--url', action="store",help="URL to access.")
     io_group.add_argument('--username', action="store",help="Username for access.")
@@ -100,6 +101,8 @@ def main(sysargs = sys.argv[1:]):
             sys.stderr.write(cyan(f'Error: please provide `metadata` for `report_only` grinch.\n'))
             sys.exit(-1)
         snakefile = data_install_checks.get_report_snakefile(thisdir)
+
+    gfunk.add_arg_to_config("alias",args.alias,config)
 
     config["flight_data_path"] = os.path.join(thisdir,"data","flights")
     config["import_report_path"] = os.path.join(thisdir,"data")

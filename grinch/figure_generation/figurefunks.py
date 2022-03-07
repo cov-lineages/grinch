@@ -80,7 +80,37 @@ def prep_inputs():
 
     return conversion_dict2, omitted
 
-def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, figdir, countries, world_map):
+def get_alias_dict(alias_file):
+    alias_dict = {}
+    if not alias_file:
+        return alias_dict
+
+    with open(alias_file, "r") as read_file:
+        alias_dict = json.load(read_file)
+    if "A" in alias_dict:
+        del alias_dict["A"]
+    if "B" in alias_dict:
+        del alias_dict["B"]
+    return alias_dict 
+
+def expand_alias(pango_lineage, alias_dict):
+    if not pango_lineage or pango_lineage in ["None", None, ""] or "/" in pango_lineage:
+        return None
+
+    lineage_parts = pango_lineage.split(".")
+    if lineage_parts[0].startswith('X'):
+        return pango_lineage
+    while lineage_parts[0] in alias_dict.keys():
+        if len(lineage_parts) > 1:
+            pango_lineage = alias_dict[lineage_parts[0]] + "." + ".".join(lineage_parts[1:])
+        else:
+            pango_lineage = alias_dict[lineage_parts[0]]
+        lineage_parts = pango_lineage.split(".")
+    if lineage_parts[0] not in ["A","B"]:
+        return None
+    return pango_lineage
+
+def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, figdir, countries, world_map, alias_dict):
 
     locations_to_dates = defaultdict(list)
     country_to_new_country = {}
@@ -88,32 +118,34 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
     country_dates = defaultdict(list)
     absent_countries = set()
 
+    earliest_dates = {
+        "B.1.1.7": "2020-09-01",
+        "B.1.351": "2020-09-01",
+        "P.1": "2020-09-01",
+        "B.1.617.2": "2021-03-01",
+        "B.1.1.529": "2021-09-01"
+    }
+
+    earliest_date = "2020-09-01"
+    if lineage_of_interest in earliest_dates:
+        earliest_date = earliest_dates[lineage_of_interest]
+    cut_off = datetime.strptime(earliest_date, "%Y-%m-%d").date()
+
+    expanded_lineage_of_interest = expand_alias(lineage_of_interest, alias_dict)
+
     with open(metadata) as f:
         data = csv.DictReader(f)
         
-        
         for seq in data:
-            cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
-                
             lineage = seq["lineage"]
-
-            if lineage == "B.1.1.7": 
-                cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
-            elif lineage == "B.1.351":
-                cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
-            elif lineage == "P.1":
-                cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
-            elif lineage == "B.1.617.2":
-                cut_off = datetime.strptime("2021-03-01", "%Y-%m-%d").date()
-            elif lineage == "B.1.1.529" or lineage.startswith("BA."):
-                cut_off = datetime.strptime("2021-09-01", "%Y-%m-%d").date()
-
+            lineage = expand_alias(lineage, alias_dict)
+            
             try:
                 sample_date = datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
                 if sample_date < cut_off:
                     pass
                 else:
-                    if seq["lineage"] == lineage_of_interest:
+                    if lineage == expanded_lineage_of_interest or lineage.startswith(expanded_lineage_of_interest + "."):
                         seq_country = seq["country"].upper().replace(" ","_")
                         if seq_country == "CARIBBEAN":
                             seq_country = seq["sequence_name"].split("/")[0].upper().replace(" ","_")
@@ -137,7 +169,6 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                         country_to_new_country[seq_country] = new_country
             except:
                 pass
-    
 
     loc_to_earliest_date = {}
     loc_seq_counts = {}
@@ -172,6 +203,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
 
 
     info_df = pd.DataFrame(df_dict)
+    print(lineage_of_interest, earliest_date, info_df)
 
     with_info = world_map.merge(info_df, how="outer")
 
@@ -186,7 +218,7 @@ def make_dataframe(metadata, conversion_dict2, omitted, lineage_of_interest, fig
                 try:
                     date = datetime.strptime(seq["sample_date"], "%Y-%m-%d").date()
                 except:
-                    print(seq_country, new_country, seq["sample_date"])
+                    pass
                 try:
                     if date >= loc_to_earliest_date[new_country]:
                         if new_country not in country_new_seqs:
@@ -720,7 +752,7 @@ def cumulative_seqs_over_time(figdir, locations_to_dates,lineage):
     
     plt.savefig(os.path.join(figdir,f"Cumulative_sequence_count_over_time_{lineage}.svg"), format='svg', bbox_inches='tight')
 
-def plot_figures(world_map_file, figdir, metadata, continent_file, flight_data_path):
+def plot_figures(world_map_file, figdir, metadata, continent_file, flight_data_path, alias_file):
     
     lineage_summary = {}
     lineage_info = pkg_resources.resource_filename('grinch', f'data/lineage_info.json')
@@ -746,10 +778,11 @@ def plot_figures(world_map_file, figdir, metadata, continent_file, flight_data_p
     world_map, countries = prep_map(world_map_file)
     country_to_continent = get_continent_mapping(continent_file)
     conversion_dict2, omitted = prep_inputs()
+    alias_dict = get_alias_dict(alias_file)
 
     for lineage in lineages_of_interest:
         print(lineage)
-        with_info, locations_to_dates, country_new_seqs, loc_to_earliest_date, country_dates, number_to_date = make_dataframe(metadata, conversion_dict2, omitted, lineage, figdir, countries, world_map)
+        with_info, locations_to_dates, country_new_seqs, loc_to_earliest_date, country_dates, number_to_date = make_dataframe(metadata, conversion_dict2, omitted, lineage, figdir, countries, world_map, alias_dict)
 
         lineage_data = lineage_summary[lineage]
         threshold = lineage_data["threshold"]

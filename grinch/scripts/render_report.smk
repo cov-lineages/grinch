@@ -10,7 +10,7 @@ rule render_report:
     output:
         data = os.path.join(config["outdir"],"report","grinch_data.json")
     run:
-        fig_gen.plot_figures(config["world_map_file"], config["figdir"], input.metadata, config["continent_file"], config["flight_data_path"])
+        fig_gen.plot_figures(config["world_map_file"], config["figdir"], input.metadata, config["continent_file"], config["flight_data_path"], config["alias"])
 
         shell(
         """

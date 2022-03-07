@@ -70,6 +70,7 @@ def get_defaults():
                     "username":False,
                     "password":False,
                     "metadata":False,
+                    "alias":False,
                     "json":False,
                     "data_column":"sequence_name",
                     "output_prefix":"global_report",
