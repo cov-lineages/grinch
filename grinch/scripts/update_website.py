@@ -67,6 +67,18 @@ def get_conversion_dict():
     conversion_dict["Gaborone"] = "Botswana"
     return conversion_dict
 
+def split_dict_chunks(input_dict, chunks=2):
+    "Returns a list of dictionaries."
+    return_list = [dict() for idx in xrange(chunks)]
+    idx = 0
+    for k,v in input_dict.iteritems():
+        return_list[idx][k] = v
+        if idx < chunks-1:  # indexes start at 0
+            idx += 1
+        else:
+            idx = 0
+    return return_list
+
 def make_summary_info(metadata, notes, designations, json_outfile):
     # add lineages and sub lineages into a dict with verity's summary information about each lineage
     not_found = []
@@ -222,8 +234,11 @@ def make_summary_info(metadata, notes, designations, json_outfile):
             date_objects.append({"date":d,"count":summary_dict[lineage]["Date"][d]})
         summary_dict[lineage]["Date"] = date_objects
 
-    with open(json_outfile, 'w', encoding='utf-8') as jsonf: 
-        jsonf.write(json.dumps(summary_dict, indent=4)) 
+    number_chunks = 5
+    summary_chunks = split_dict_chunks(summary_dict, number_chunks)
+    for i in range(number_chunks):
+        with open(json_outfile.replace(".json", "_%i.json" %i), 'w', encoding='utf-8') as jsonf:
+            jsonf.write(json.dumps(summary_chunks[i], indent=4)) 
     print("Lineages not found", list(set(not_found)))
     return summary_dict
 
