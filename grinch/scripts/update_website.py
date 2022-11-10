@@ -69,9 +69,9 @@ def get_conversion_dict():
 
 def split_dict_chunks(input_dict, chunks=2):
     "Returns a list of dictionaries."
-    return_list = [dict() for idx in xrange(chunks)]
+    return_list = [dict() for idx in range(chunks)]
     idx = 0
-    for k,v in input_dict.iteritems():
+    for k,v in input_dict.items():
         return_list[idx][k] = v
         if idx < chunks-1:  # indexes start at 0
             idx += 1
