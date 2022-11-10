@@ -152,6 +152,13 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                                     summary_dict[lineage]["Earliest date"] = d
                             else:
                                 summary_dict[lineage]["Earliest date"] = d
+
+                            if summary_dict[lineage]["Latest date"]:
+
+                                if d > summary_dict[lineage]["Latest date"]:
+                                    summary_dict[lineage]["Latest date"] = d
+                            else:
+                                summary_dict[lineage]["Latest date"] = d
                             
                             summary_dict[lineage]["Date"][str(d)] +=1
                             if country not in summary_dict[lineage]["Country counts"]:
@@ -181,6 +188,13 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                                 summary_dict[lineage]["Earliest date"] = d
                         else:
                             summary_dict[lineage]["Earliest date"] = d
+
+                        if summary_dict[lineage]["Latest date"]:
+
+                            if d > summary_dict[lineage]["Latest date"]:
+                                summary_dict[lineage]["Latest date"] = d
+                        else:
+                            summary_dict[lineage]["Latest date"] = d
                         
                         summary_dict[lineage]["Date"][str(d)] +=1
                         if country not in summary_dict[lineage]["Country counts"]:
@@ -196,7 +210,12 @@ def make_summary_info(metadata, notes, designations, json_outfile):
             except:
                 pass
     for lineage in summary_dict:
-        
+        one_year_ago = datetime.datetime.now() - datetime.timedelta(days=3*365)
+        if summary_dict[lineage]["Latest date"] < one_year_ago:
+            continue
+        else:
+            del summary_dict[lineage]
+
         travel = summary_dict[lineage]["Travel history"]
         travel_info = ""
         for k in travel:
@@ -234,11 +253,15 @@ def make_summary_info(metadata, notes, designations, json_outfile):
             date_objects.append({"date":d,"count":summary_dict[lineage]["Date"][d]})
         summary_dict[lineage]["Date"] = date_objects
 
-    number_chunks = 5
-    summary_chunks = split_dict_chunks(summary_dict, number_chunks)
-    for i in range(number_chunks):
-        with open(json_outfile.replace(".json", "_%i.json" %i), 'w', encoding='utf-8') as jsonf:
-            jsonf.write(json.dumps(summary_chunks[i], indent=4)) 
+    number_chunks = 1
+    if number_chunks > 1:
+        summary_chunks = split_dict_chunks(summary_dict, number_chunks)
+        for i in range(number_chunks):
+            with open(json_outfile.replace(".json", "_%i.json" %i), 'w', encoding='utf-8') as jsonf:
+                jsonf.write(json.dumps(summary_chunks[i], indent=4))
+    else:
+        with open(json_outfile, 'w', encoding='utf-8') as jsonf:
+            jsonf.write(json.dumps(summary_dict, indent=4))
     print("Lineages not found", list(set(not_found)))
     return summary_dict
 
