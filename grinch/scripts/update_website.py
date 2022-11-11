@@ -6,6 +6,7 @@ import argparse
 import collections
 from datetime import date
 from datetime import datetime
+from datetime import timedelta
 import shutil
 
 def parse_args():
@@ -92,6 +93,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                                 "Countries":collections.Counter(),
                                 "Country counts":collections.defaultdict(dict),
                                 "Earliest date": "",
+                                "Latest date": "",
                                 "Number designated":0,
                                 "Number assigned":0,
                                 "Date":collections.Counter(),
@@ -209,12 +211,13 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                             summary_dict[lineage]["Travel history"][travel_history]+=1
             except:
                 pass
+
+    one_year_ago = datetime.now() - timedelta(days=365)
+    old_lineages = []
+
     for lineage in summary_dict:
-        one_year_ago = datetime.datetime.now() - datetime.timedelta(days=3*365)
-        if summary_dict[lineage]["Latest date"] < one_year_ago:
-            continue
-        else:
-            del summary_dict[lineage]
+        if summary_dict[lineage]["Latest date"] == "" or summary_dict[lineage]["Latest date"] < one_year_ago.date():
+            old_lineages.append(lineage)
 
         travel = summary_dict[lineage]["Travel history"]
         travel_info = ""
@@ -246,12 +249,22 @@ def make_summary_info(metadata, notes, designations, json_outfile):
         summary_dict[lineage]["Countries"] = country_info
         
         summary_dict[lineage]["Earliest date"] = str(summary_dict[lineage]["Earliest date"])
+        summary_dict[lineage]["Latest date"] = str(summary_dict[lineage]["Latest date"])
 
         date_objects = []
         for d in summary_dict[lineage]["Date"]:
 
             date_objects.append({"date":d,"count":summary_dict[lineage]["Date"][d]})
         summary_dict[lineage]["Date"] = date_objects
+
+    with open(json_outfile.replace(".json",".full.json"), 'w', encoding='utf-8') as jsonf:
+        jsonf.write(json.dumps(summary_dict, indent=4))
+
+    print("Old lineages", old_lineages)
+    for lineage in old_lineages:
+        del summary_dict[lineage]
+    for lineage in summary_dict:
+        del summary_dict[lineage]["Latest date"]
 
     number_chunks = 1
     if number_chunks > 1:
