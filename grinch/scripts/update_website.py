@@ -9,6 +9,8 @@ from datetime import datetime
 from datetime import timedelta
 import shutil
 
+from utils.figurefunks import get_alias_dict, expand_alias
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Update lineage web pages for cov-lineages.org')
 
@@ -20,15 +22,6 @@ def parse_args():
     parser.add_argument("-o","--outfile",action="store",type=str, dest="json_outfile")
     return parser.parse_args()
 
-def get_alias(alias_file):
-    alias_dict = {}
-    parsed_aliases= {}
-    with open(alias_file, "r") as read_file:
-        alias_dict = json.load(read_file)
-    for i in alias_dict:
-        if type(alias_dict[i]) != list and alias_dict[i]!="":
-            parsed_aliases[i] = alias_dict[i]
-    return parsed_aliases
 
 def get_description_dict(description_file):
     lineages = {}
@@ -311,23 +304,22 @@ def sort_lineages(lin_list):
     finished_list = ['.'.join(i) for i in stringed]
     return finished_list
 
-def get_child_dict(lineages,alias):
-    child_dict = collections.defaultdict(list)
-            
+def get_child_dict(lineages,alias_dict):
+    alias_to_lineage_dict = {}
     for lineage in lineages:
         lineage = lineage.lstrip("*")
+        alias = expand_alias(lineage, alias_dict)
+        alias_to_lineage_dict[alias] = lineage
+        alias_to_lineage_dict[lineage] = alias
+
+    child_dict = collections.defaultdict(list)
+    for lineage in lineages:
+        lineage = lineage.lstrip("*")
+        alias = alias_to_lineage_dict[lineage]
         for i in range(len(lineage.split("."))):
             parent = ".".join(lineage.split(".")[:i+1])
-            if parent in alias:
-                a = alias[parent]
-                for i in range(len(a.split("."))):
-                    parent2 = ".".join(a.split(".")[:i+1])
-                    child_dict[parent2].append(lineage)
-            elif "B"==parent:
-                child_dict[parent].append(lineage)
-                child_dict["A"].append(lineage)
-            else:
-                child_dict[parent].append(lineage)
+            child_dict[alias_to_lineage_dict[parent]].append(lineage)
+            
     children = {}
     for lineage in child_dict:
         children_lineages = sorted(list(set(child_dict[lineage])))
@@ -345,7 +337,7 @@ def update_pages():
     lineage_path = os.path.join(website_dir, "lineages")
 
     lineages = make_summary_info(args.metadata, args.lineage_notes, args.designations, args.json_outfile)
-    alias = get_alias(args.alias)
+    alias = get_alias_dict(args.alias)
     child_dict = get_child_dict(lineages,alias)
     c=0
 
