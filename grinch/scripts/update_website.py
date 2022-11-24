@@ -2,6 +2,7 @@
 import csv
 import json
 import os
+import sys
 import argparse
 import collections
 from datetime import date
@@ -9,7 +10,14 @@ from datetime import datetime
 from datetime import timedelta
 import shutil
 
-from utils.figurefunks import get_alias_dict, expand_alias
+from grinch.figure_generation.figurefunks import get_alias_dict, expand_alias
+
+vocs = ["B.1.1.7","B.1.351","P.1","B.1.617.2","B.1.1.529"]
+cut_off_dict = {"B.1.1.7": "2020-09-01",
+                "B.1.351": "2020-09-01",
+                "P.1": "2020-09-01",
+                "B.1.617.2": "2021-03-01",
+                "B.1.1.529": "2021-09-01"}
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Update lineage web pages for cov-lineages.org')
@@ -22,6 +30,15 @@ def parse_args():
     parser.add_argument("-o","--outfile",action="store",type=str, dest="json_outfile")
     return parser.parse_args()
 
+def check_voc(lineage, alias_dict):
+    if lineage in vocs:
+        return lineage
+    expanded_lineage = expand_alias(lineage, alias_dict)
+    for voc in vocs:
+        if expanded_lineage.startswith(voc + "."):
+            return voc
+    return None
+    
 
 def get_description_dict(description_file):
     lineages = {}
@@ -73,7 +90,7 @@ def split_dict_chunks(input_dict, chunks=2):
             idx = 0
     return return_list
 
-def make_summary_info(metadata, notes, designations, json_outfile):
+def make_summary_info(metadata, notes, designations, json_outfile, alias_dict):
     # add lineages and sub lineages into a dict with verity's summary information about each lineage
     not_found = []
     description_dict = get_description_dict(notes)
@@ -114,94 +131,45 @@ def make_summary_info(metadata, notes, designations, json_outfile):
                 d = date.fromisoformat(row["sample_date"])
                 travel_history = row["edin_travel"]
                 lineage = row["lineage"]
-                if lineage in ["B.1.1.7","B.1.351","P.1","B.1.617.2","B.1.1.529"] or lineage.startswith("BA."):
-                    cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
-                
-                    if lineage == "B.1.1.7": 
-                        cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
-                    elif lineage == "B.1.351":
-                        cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
-                    elif lineage == "P.1":
-                        cut_off = datetime.strptime("2020-09-01", "%Y-%m-%d").date()
-                    elif lineage == "B.1.617.2":
-                        cut_off = datetime.strptime("2021-03-01", "%Y-%m-%d").date()
-                    elif lineage == "B.1.1.529" or lineage.startswith("BA."):
-                        cut_off = datetime.strptime("2021-09-01", "%Y-%m-%d").date()
-                    
-                    if d < cut_off: 
+                voc = check_voc(lineage, alias_dict)
+                if voc:
+                    cut_off = datetime.strptime(cut_off_dict[voc], "%Y-%m-%d").date()
+                    if d < cut_off:
                         pass
-                    else:
-                        if lineage != "" and lineage in description_dict:
-                            
-                            if country == "Caribbean":
-                                country = row["sequence_name"].split("/")[0]
-                            
-                            if country in conversion_dict:
-                                country = conversion_dict[country]
-                            
-                            summary_dict[lineage]["Countries"][country]+=1
-                            
-                            if summary_dict[lineage]["Earliest date"]:
-                            
-                                if d < summary_dict[lineage]["Earliest date"]:
-                                    summary_dict[lineage]["Earliest date"] = d
-                            else:
-                                summary_dict[lineage]["Earliest date"] = d
 
-                            if summary_dict[lineage]["Latest date"]:
-
-                                if d > summary_dict[lineage]["Latest date"]:
-                                    summary_dict[lineage]["Latest date"] = d
-                            else:
-                                summary_dict[lineage]["Latest date"] = d
-                            
-                            summary_dict[lineage]["Date"][str(d)] +=1
-                            if country not in summary_dict[lineage]["Country counts"]:
-                                summary_dict[lineage]["Country counts"][country] = collections.Counter()
-                                summary_dict[lineage]["Country counts"][country][str(d)]+=1
-                            else:
-                                summary_dict[lineage]["Country counts"][country][str(d)]+=1
-
-                            summary_dict[lineage]["Number assigned"] +=1 
-
-                            if travel_history:
-                                summary_dict[lineage]["Travel history"][travel_history]+=1
-                else:
-                    if lineage != "" and lineage in description_dict:
-                            
-                        if country == "Caribbean":
-                            country = row["sequence_name"].split("/")[0]
+                if lineage != "" and lineage in description_dict:
                         
-                        if country in conversion_dict:
-                            country = conversion_dict[country]
+                    if country == "Caribbean":
+                        country = row["sequence_name"].split("/")[0]
                         
-                        summary_dict[lineage]["Countries"][country]+=1
+                    if country in conversion_dict:
+                        country = conversion_dict[country]
                         
-                        if summary_dict[lineage]["Earliest date"]:
+                    summary_dict[lineage]["Countries"][country]+=1
                         
-                            if d < summary_dict[lineage]["Earliest date"]:
-                                summary_dict[lineage]["Earliest date"] = d
-                        else:
+                    if summary_dict[lineage]["Earliest date"]:
+                        if d < summary_dict[lineage]["Earliest date"]:
                             summary_dict[lineage]["Earliest date"] = d
+                    else:
+                        summary_dict[lineage]["Earliest date"] = d
 
-                        if summary_dict[lineage]["Latest date"]:
-
-                            if d > summary_dict[lineage]["Latest date"]:
-                                summary_dict[lineage]["Latest date"] = d
-                        else:
+                    if summary_dict[lineage]["Latest date"]:
+                        if d > summary_dict[lineage]["Latest date"]:
                             summary_dict[lineage]["Latest date"] = d
+                    else:
+                        summary_dict[lineage]["Latest date"] = d
                         
-                        summary_dict[lineage]["Date"][str(d)] +=1
-                        if country not in summary_dict[lineage]["Country counts"]:
-                            summary_dict[lineage]["Country counts"][country] = collections.Counter()
-                            summary_dict[lineage]["Country counts"][country][str(d)]+=1
-                        else:
-                            summary_dict[lineage]["Country counts"][country][str(d)]+=1
+                    summary_dict[lineage]["Date"][str(d)] +=1
+                    if country not in summary_dict[lineage]["Country counts"]:
+                        summary_dict[lineage]["Country counts"][country] = collections.Counter()
+                        summary_dict[lineage]["Country counts"][country][str(d)]+=1
+                    else:
+                        summary_dict[lineage]["Country counts"][country][str(d)]+=1
 
-                        summary_dict[lineage]["Number assigned"] +=1 
+                    summary_dict[lineage]["Number assigned"] +=1 
 
-                        if travel_history:
-                            summary_dict[lineage]["Travel history"][travel_history]+=1
+                    if travel_history:
+                        summary_dict[lineage]["Travel history"][travel_history]+=1
             except:
                 pass
 
@@ -210,7 +178,8 @@ def make_summary_info(metadata, notes, designations, json_outfile):
 
     for lineage in summary_dict:
         if summary_dict[lineage]["Latest date"] == "" or summary_dict[lineage]["Latest date"] < one_year_ago.date():
-            old_lineages.append(lineage)
+            if not check_voc(lineage, alias_dict):
+                old_lineages.append(lineage)
 
         travel = summary_dict[lineage]["Travel history"]
         travel_info = ""
@@ -253,7 +222,7 @@ def make_summary_info(metadata, notes, designations, json_outfile):
     with open(json_outfile.replace(".json",".full.json"), 'w', encoding='utf-8') as jsonf:
         jsonf.write(json.dumps(summary_dict, indent=4))
 
-    print("Old lineages", old_lineages)
+    #print("Old lineages", old_lineages)
     for lineage in old_lineages:
         del summary_dict[lineage]
     for lineage in summary_dict:
@@ -271,19 +240,32 @@ def make_summary_info(metadata, notes, designations, json_outfile):
     print("Lineages not found", list(set(not_found)))
     return summary_dict
 
+def collapse_lineage_list(lin_list, alias_dict):
+    preface = ".".join(lin_list[:4])
+    while len(lin_list) > 4 and preface in alias_dict:
+        print(lin_list)
+        preface = ".".join(lin_list[:4])
+        print(preface)
+        lin_list = [alias_dict[preface]].extend(lin_list[4:])
+        print(lin_list)
+    return lin_list
+    
 def get_parent(lineage,alias):
 
     default_mapping = {"B":"A"}
     lin_list = lineage.split(".")
-    
+
     if lineage == "B":
         parent = "A"
 
-    elif lin_list[0] in alias and len(lin_list) == 2:
-        parent = alias[lin_list[0]]
+    if len(lin_list) == 2 and lin_list[0] in alias:
+        lin_list = ".".split(alias[lin_list[0]]).append(lin_list[1])
     
-    else:
-        parent = ".".join(lin_list[:-1])
+    if len(lin_list) > 4:
+        lin_list = collapse_lineage_list(lin_list, alias)
+        sys.exit()
+
+    parent = ".".join(lin_list[:-1])
     return parent
 
 def sort_lineages(lin_list):
@@ -305,25 +287,23 @@ def sort_lineages(lin_list):
     return finished_list
 
 def get_child_dict(lineages,alias_dict):
-    alias_to_lineage_dict = {}
-    for lineage in lineages:
-        lineage = lineage.lstrip("*")
-        alias = expand_alias(lineage, alias_dict)
-        alias_to_lineage_dict[alias] = lineage
-        alias_to_lineage_dict[lineage] = alias
-
     child_dict = collections.defaultdict(list)
     for lineage in lineages:
         lineage = lineage.lstrip("*")
-        alias = alias_to_lineage_dict[lineage]
-        for i in range(len(lineage.split("."))):
-            parent = ".".join(lineage.split(".")[:i+1])
-            child_dict[alias_to_lineage_dict[parent]].append(lineage)
+        parent = lineage
+        child_dict[parent].append(lineage)
+        while parent != "A" and not parent.startswith("X"):
+            parent = get_parent(parent, alias_dict)
+            child_dict[parent].append(lineage)
+            if lineage == "C.1.2":
+                print(lineage, parent)
             
     children = {}
     for lineage in child_dict:
         children_lineages = sorted(list(set(child_dict[lineage])))
         children[lineage] = children_lineages
+    print(child_dict["C.1.2"])
+    print(children["C.1.2"])
     return children
 
 def get_children(lineage, child_dict):
@@ -336,8 +316,8 @@ def update_pages():
     
     lineage_path = os.path.join(website_dir, "lineages")
 
-    lineages = make_summary_info(args.metadata, args.lineage_notes, args.designations, args.json_outfile)
     alias = get_alias_dict(args.alias)
+    lineages = make_summary_info(args.metadata, args.lineage_notes, args.designations, args.json_outfile, alias)
     child_dict = get_child_dict(lineages,alias)
     c=0
 
@@ -379,7 +359,10 @@ def update_pages():
                     for child in sort_lineages(get_children(lineage, child_dict)):
                         lineage_file.write("      - " + child + "\n")
 
-                    lineage_file.write("  parent: " + get_parent(lineage,alias) + "\n")
+                    try:
+                        lineage_file.write("  parent: " + get_parent(lineage,alias) + "\n")
+                    except:
+                        print(lineage,get_parent(lineage,alias))
 
         copyFile = shutil.copy(f"{website_dir}/data/lineages.yml", f"{website_dir}/_data/lineages.yml")
 if __name__ == '__main__':

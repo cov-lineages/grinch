@@ -63,6 +63,7 @@ git add $GIT_REPO_DIR/lineages-website/data/lineages.yml
 git commit -m "updating website $TODAY"
 git push
 
+###
 #PANGO=/localdisk/home/shared/raccoon-dog/"$TODAY"_gisaid/publish/pangolin/*.cache.csv
 #echo "Using pango file $PANGO"
 #conda activate datapipe
