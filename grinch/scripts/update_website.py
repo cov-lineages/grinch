@@ -34,6 +34,8 @@ def check_voc(lineage, alias_dict):
     if lineage in vocs:
         return lineage
     expanded_lineage = expand_alias(lineage, alias_dict)
+    if not expanded_lineage:
+        return None
     for voc in vocs:
         if expanded_lineage.startswith(voc + "."):
             return voc
@@ -178,7 +180,7 @@ def make_summary_info(metadata, notes, designations, json_outfile, alias_dict):
 
     for lineage in summary_dict:
         if summary_dict[lineage]["Latest date"] == "" or summary_dict[lineage]["Latest date"] < one_year_ago.date():
-            if not check_voc(lineage, alias_dict):
+            if not lineage in vocs:
                 old_lineages.append(lineage)
 
         travel = summary_dict[lineage]["Travel history"]

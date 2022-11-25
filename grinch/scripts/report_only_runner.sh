@@ -55,6 +55,7 @@ git add $GIT_REPO_DIR/lineages-website/lineages/*.md
 git add $GIT_REPO_DIR/lineages-website/lineages/*/*.md
 git add $GIT_REPO_DIR/lineages-website/global_report_*.md
 git add $GIT_REPO_DIR/lineages-website/_data/lineage_data.json
+git add $GIT_REPO_DIR/lineages-website/_data/lineage_data.full.json
 git add $GIT_REPO_DIR/lineages-website/_data/grinch_data.json
 git add $GIT_REPO_DIR/lineages-website/assets/images/*.svg
 git add $GIT_REPO_DIR/lineages-website/_data/lineages.yml
