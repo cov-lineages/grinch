@@ -89,7 +89,7 @@ def get_alias_dict(alias_file):
         alias_dict = json.load(read_file)
     alias_keys = [k for k in alias_dict.keys()]
     for key in alias_keys:
-        if not key.startswith("X"):
+        if alias_dict[key] and not key.startswith("X") and not alias_dict[key] in alias_dict:
             alias_dict[alias_dict[key]] = key
     if "A" in alias_dict:
         del alias_dict["A"]

@@ -12,7 +12,7 @@ import shutil
 
 from grinch.figure_generation.figurefunks import get_alias_dict, expand_alias
 
-vocs = ["B.1.1.7","B.1.351","P.1","B.1.617.2","B.1.1.529"]
+vocs = ["B.1.1.7","B.1.351","P.1","B.1.617.2","B.1.1.529", "A.1"]
 cut_off_dict = {"B.1.1.7": "2020-09-01",
                 "B.1.351": "2020-09-01",
                 "P.1": "2020-09-01",
@@ -178,9 +178,11 @@ def make_summary_info(metadata, notes, designations, json_outfile, alias_dict):
     one_year_ago = datetime.now() - timedelta(days=365)
     old_lineages = []
 
+    vocs_and_parents = get_voc_parents(alias_dict)
     for lineage in summary_dict:
         if summary_dict[lineage]["Latest date"] == "" or summary_dict[lineage]["Latest date"] < one_year_ago.date():
-            if not lineage in vocs:
+            if not lineage in vocs_and_parents:
+                print("Old lineage not in vocs", lineage, vocs_and_parents)
                 old_lineages.append(lineage)
 
         travel = summary_dict[lineage]["Travel history"]
@@ -224,7 +226,7 @@ def make_summary_info(metadata, notes, designations, json_outfile, alias_dict):
     with open(json_outfile.replace(".json",".full.json"), 'w', encoding='utf-8') as jsonf:
         jsonf.write(json.dumps(summary_dict, indent=4))
 
-    #print("Old lineages", old_lineages)
+    print("Old lineages", old_lineages)
     for lineage in old_lineages:
         del summary_dict[lineage]
     for lineage in summary_dict:
@@ -244,32 +246,46 @@ def make_summary_info(metadata, notes, designations, json_outfile, alias_dict):
 
 def collapse_lineage_list(lin_list, alias_dict):
     preface = ".".join(lin_list[:4])
-    while len(lin_list) > 4 and preface in alias_dict:
-        print(lin_list)
+    while len(lin_list) > 5 and preface in alias_dict:
         preface = ".".join(lin_list[:4])
-        print(preface)
-        lin_list = [alias_dict[preface]].extend(lin_list[4:])
-        print(lin_list)
+        lin_list = [alias_dict[preface]]
+        lin_list.extend(lin_list[4:])
     return lin_list
-    
+   
 def get_parent(lineage,alias):
 
-    default_mapping = {"B":"A"}
     lin_list = lineage.split(".")
 
     if lineage == "B":
-        parent = "A"
+        return "A"
+
+    if lineage.startswith("X"):
+        return None
 
     if len(lin_list) == 2 and lin_list[0] in alias:
-        lin_list = ".".split(alias[lin_list[0]]).append(lin_list[1])
-    
-    if len(lin_list) > 4:
+        lin_list = alias[lin_list[0]].split(".")
+        lin_list.append(lin_list[1])
+   
+    if len(lin_list) > 5:
         lin_list = collapse_lineage_list(lin_list, alias)
-        sys.exit()
 
     parent = ".".join(lin_list[:-1])
     return parent
 
+def get_voc_parents(alias_dict):
+    vocs = ["B.1.1.7","B.1.351","P.1","B.1.617.2","B.1.1.529"]
+    vocs_and_parents = set()
+    for v in vocs:
+        parent = v
+        while parent != "A" and not parent.startswith("X"):
+            vocs_and_parents.add(parent)
+            new_parent = get_parent(parent, alias_dict)
+            if new_parent == parent:
+                break
+            else:
+                parent = new_parent
+    return list(vocs_and_parents)
+       
 def sort_lineages(lin_list):
     splitted = [i.split(".") for i in lin_list]
     numeric = []
@@ -294,18 +310,23 @@ def get_child_dict(lineages,alias_dict):
         lineage = lineage.lstrip("*")
         parent = lineage
         child_dict[parent].append(lineage)
-        while parent != "A" and not parent.startswith("X"):
-            parent = get_parent(parent, alias_dict)
+        count = 0
+        while parent != "A" and not parent.startswith("X") and count < 200:
+            new_parent = get_parent(parent, alias_dict)
+            if new_parent == parent:
+                break
+            else:
+                parent = new_parent
             child_dict[parent].append(lineage)
-            if lineage == "C.1.2":
-                print(lineage, parent)
+            count += 1
+            if count == 200:
+                print("had a loop", parent, alias_dict)
+                sys.exit()
             
     children = {}
     for lineage in child_dict:
         children_lineages = sorted(list(set(child_dict[lineage])))
         children[lineage] = children_lineages
-    print(child_dict["C.1.2"])
-    print(children["C.1.2"])
     return children
 
 def get_children(lineage, child_dict):
