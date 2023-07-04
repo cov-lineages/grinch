@@ -175,7 +175,7 @@ def make_summary_info(metadata, notes, designations, json_outfile, alias_dict):
             except:
                 pass
 
-    one_year_ago = datetime.now() - timedelta(days=365)
+    one_year_ago = datetime.now() - timedelta(days=120)
     old_lineages = []
 
     vocs_and_parents = get_voc_parents(alias_dict)
@@ -259,12 +259,13 @@ def get_parent(lineage,alias):
     if lineage == "B":
         return "A"
 
-    if lineage.startswith("X"):
+    if len(lin_list) == 1 and lineage.startswith("X"):
         return None
 
-    if len(lin_list) == 2 and lin_list[0] in alias:
-        lin_list = alias[lin_list[0]].split(".")
-        lin_list.append(lin_list[1])
+    if len(lin_list) == 2 and lin_list[0] in alias and not lin_list[0].startswith("X"):
+        new_lin_list = alias[lin_list[0]].split(".")
+        new_lin_list.append(lin_list[1])
+        lin_list = new_lin_list
    
     if len(lin_list) > 5:
         lin_list = collapse_lineage_list(lin_list, alias)
@@ -302,6 +303,7 @@ def sort_lineages(lin_list):
             lin.append(str(j))
         stringed.append(lin)
     finished_list = ['.'.join(i) for i in stringed]
+    assert len(lin_list) == len(finished_list)
     return finished_list
 
 def get_child_dict(lineages,alias_dict):
@@ -311,9 +313,9 @@ def get_child_dict(lineages,alias_dict):
         parent = lineage
         child_dict[parent].append(lineage)
         count = 0
-        while parent != "A" and not parent.startswith("X") and count < 200:
+        while parent and parent != "A" and count < 200:
             new_parent = get_parent(parent, alias_dict)
-            if new_parent == parent:
+            if not new_parent or new_parent == parent:
                 break
             else:
                 parent = new_parent
@@ -323,10 +325,16 @@ def get_child_dict(lineages,alias_dict):
                 print("had a loop", parent, alias_dict)
                 sys.exit()
             
+    for key in child_dict:
+        if key.startswith("X"):
+            print(key, child_dict[key])
     children = {}
     for lineage in child_dict:
         children_lineages = sorted(list(set(child_dict[lineage])))
         children[lineage] = children_lineages
+    for key in children:
+        if key.startswith("X"):
+            print(key, child_dict[key])
     return children
 
 def get_children(lineage, child_dict):
@@ -362,7 +370,9 @@ def update_pages():
                     lineage_dir = os.path.join(lineage_path, "lineages6")
                 if not os.path.exists(lineage_dir):
                     os.mkdir(lineage_dir)
-                if lineage =="A":
+                if lineage.startswith("X"):
+                    print(lineage, get_children(lineage, child_dict), get_parent(lineage,alias))
+                if lineage =="A" or (lineage.startswith("X") and "." not in lineage):
                     with open(f"{lineage_dir}/lineage_{lineage}.md","w") as fw:
                         fw.write(f"""---\npermalink: /lineages/lineage_{lineage}.html\nlayout: lineage_page\ntitle: Lineage {lineage}\nredirect_to: ../lineage.html?lineage={lineage}\nlineage: {lineage}\nchildren: {sort_lineages(get_children(lineage, child_dict))}\n---\n""")
                 
@@ -382,10 +392,7 @@ def update_pages():
                     for child in sort_lineages(get_children(lineage, child_dict)):
                         lineage_file.write("      - " + child + "\n")
 
-                    try:
                         lineage_file.write("  parent: " + get_parent(lineage,alias) + "\n")
-                    except:
-                        print(lineage,get_parent(lineage,alias))
 
         copyFile = shutil.copy(f"{website_dir}/data/lineages.yml", f"{website_dir}/_data/lineages.yml")
 if __name__ == '__main__':

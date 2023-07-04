@@ -19,7 +19,7 @@ echo "GIT_REPO_DIR: $GIT_REPO_DIR"
 echo "SHARED_RACCOON_DIR: $SHARED_RACCOON_DIR"
 
 eval "$(conda shell.bash hook)"
-conda activate /localdisk/home/shared/.conda/envs/grinch
+conda activate /localdisk/home/shared/miniconda3/envs/grinch
 
 cd $GIT_REPO_DIR/pango-designation && git pull #gets any updates to the reports in the data directory
 
@@ -32,7 +32,7 @@ echo "Using metadata $METADATA"
 which grinch
 echo $PWD
 outdir=$SHARED_RACCOON_DIR/"$TODAY"_website
-grinch -t 10 -m $METADATA --outdir $outdir --output-prefix global_report -a report_only --alias $GIT_REPO_DIR/pango-designation/pango_designation/alias_key.json --verbose
+grinch -t 10 -m $METADATA --outdir $outdir --output-prefix global_report -a report_only --alias $GIT_REPO_DIR/pango-designation/pango_designation/alias_key.json --verbose --no-temp
 
 echo "Update website"
 cd $GIT_REPO_DIR/lineages-website && git pull

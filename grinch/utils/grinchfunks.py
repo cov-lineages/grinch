@@ -4,6 +4,7 @@
 import grinch.utils.custom_logger as custom_logger
 import grinch.utils.log_handler_handle as lh
 from grinch.utils import grinchfunks
+from grinch.utils.log_colours import *
 
 import os
 import argparse
