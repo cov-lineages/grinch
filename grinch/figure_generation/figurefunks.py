@@ -1,5 +1,6 @@
 import geopandas
 import csv
+import sys
 from collections import defaultdict
 from collections import Counter
 from collections import OrderedDict
@@ -87,6 +88,10 @@ def get_alias_dict(alias_file):
 
     with open(alias_file, "r") as read_file:
         alias_dict = json.load(read_file)
+    alias_keys = [k for k in alias_dict.keys()]
+    for key in alias_keys:
+        if alias_dict[key] and not key.startswith("X") and not alias_dict[key] in alias_dict:
+            alias_dict[alias_dict[key]] = key
     if "A" in alias_dict:
         del alias_dict["A"]
     if "B" in alias_dict:
@@ -100,13 +105,13 @@ def expand_alias(pango_lineage, alias_dict):
     lineage_parts = pango_lineage.split(".")
     if lineage_parts[0].startswith('X'):
         return pango_lineage
-    while lineage_parts[0] in alias_dict.keys():
+    while lineage_parts[0] in alias_dict.keys() and not lineage_parts[0].startswith('X'):
         if len(lineage_parts) > 1:
             pango_lineage = alias_dict[lineage_parts[0]] + "." + ".".join(lineage_parts[1:])
         else:
             pango_lineage = alias_dict[lineage_parts[0]]
         lineage_parts = pango_lineage.split(".")
-    if lineage_parts[0] not in ["A","B"]:
+    if lineage_parts[0] not in ["A","B"] and not lineage_parts[0].startswith('X'):
         return None
     return pango_lineage
 

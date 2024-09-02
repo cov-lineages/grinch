@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 if [ -z "$1" ]; then
   TODAY=`date +'%Y-%m-%d'`
@@ -19,7 +19,7 @@ echo "GIT_REPO_DIR: $GIT_REPO_DIR"
 echo "SHARED_RACCOON_DIR: $SHARED_RACCOON_DIR"
 
 eval "$(conda shell.bash hook)"
-conda activate /localdisk/home/shared/.conda/envs/grinch
+conda activate /localdisk/home/shared/miniconda3/envs/grinch
 
 cd $GIT_REPO_DIR/pango-designation && git pull #gets any updates to the reports in the data directory
 
@@ -32,7 +32,7 @@ echo "Using metadata $METADATA"
 which grinch
 echo $PWD
 outdir=$SHARED_RACCOON_DIR/"$TODAY"_website
-grinch -t 10 -m $METADATA --outdir $outdir --output-prefix global_report -a report_only --alias $GIT_REPO_DIR/pango-designation/pango_designation/alias_key.json --verbose
+grinch -t 10 -m $METADATA --outdir $outdir --output-prefix global_report -a report_only --alias $GIT_REPO_DIR/pango-designation/pango_designation/alias_key.json --verbose --no-temp
 
 echo "Update website"
 cd $GIT_REPO_DIR/lineages-website && git pull
@@ -52,9 +52,10 @@ cp $outdir/figures/*.svg $GIT_REPO_DIR/lineages-website/assets/images/
 
 git add $GIT_REPO_DIR/lineages-website/lineages.md
 git add $GIT_REPO_DIR/lineages-website/lineages/*.md
-git add $GIT_REPO_DIR/lineages-website/lineages/*/*.md
+git add --all $GIT_REPO_DIR/lineages-website/lineages/*/*.md
 git add $GIT_REPO_DIR/lineages-website/global_report_*.md
 git add $GIT_REPO_DIR/lineages-website/_data/lineage_data.json
+git add $GIT_REPO_DIR/lineages-website/_data/lineage_data.full.json
 git add $GIT_REPO_DIR/lineages-website/_data/grinch_data.json
 git add $GIT_REPO_DIR/lineages-website/assets/images/*.svg
 git add $GIT_REPO_DIR/lineages-website/_data/lineages.yml
@@ -63,6 +64,7 @@ git add $GIT_REPO_DIR/lineages-website/data/lineages.yml
 git commit -m "updating website $TODAY"
 git push
 
+###
 #PANGO=/localdisk/home/shared/raccoon-dog/"$TODAY"_gisaid/publish/pangolin/*.cache.csv
 #echo "Using pango file $PANGO"
 #conda activate datapipe
