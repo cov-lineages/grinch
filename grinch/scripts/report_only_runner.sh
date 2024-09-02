@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 if [ -z "$1" ]; then
   TODAY=`date +'%Y-%m-%d'`
@@ -52,7 +52,7 @@ cp $outdir/figures/*.svg $GIT_REPO_DIR/lineages-website/assets/images/
 
 git add $GIT_REPO_DIR/lineages-website/lineages.md
 git add $GIT_REPO_DIR/lineages-website/lineages/*.md
-git add $GIT_REPO_DIR/lineages-website/lineages/*/*.md
+git add --all $GIT_REPO_DIR/lineages-website/lineages/*/*.md
 git add $GIT_REPO_DIR/lineages-website/global_report_*.md
 git add $GIT_REPO_DIR/lineages-website/_data/lineage_data.json
 git add $GIT_REPO_DIR/lineages-website/_data/lineage_data.full.json
